@@ -1,0 +1,29 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url "http://repo.spring.io/libs-release" }
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE"
+    }
+}
+
+
+apply plugin: 'idea'
+apply plugin: 'scala'
+apply plugin: 'spring-boot'
+
+sourceCompatibility = 1.7
+
+repositories {
+    jcenter()
+    maven { url 'http://repo.spring.io/release' }
+}
+
+dependencies {
+	compile("org.scala-lang:scala-library:2.11.2")
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    testCompile("org.scalatest:scalatest_2.11:2.2.1")
+    testCompile("org.mockito:mockito-all:1.9.5")
+}
