@@ -31,7 +31,7 @@ class MongoConfigurationLike extends AbstractMongoConfiguration {
 
   def serverAddress(host: String, port: String) = new ServerAddress(host, port.toInt)
 
-  def credentials(username: String, dbName: String, password: String) =
+  def credentials(dbName: String, username: String, password: String) =
     ListBuffer(createMongoCRCredential(username, dbName, password.toCharArray))
 
   override def mongo = mongoHost match {
@@ -39,7 +39,6 @@ class MongoConfigurationLike extends AbstractMongoConfiguration {
       new MongoClient
     case _ =>
       new MongoClient(serverAddress(mongoHost, mongoPort),
-        credentials(mongoUsername, mongoDbName, mongoPassword))
+        credentials(mongoDbName, mongoUsername, mongoPassword))
   }
-
 }
