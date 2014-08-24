@@ -10,6 +10,7 @@ buildscript {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE"
         classpath 'com.wiredforcode:gradle-spawn-plugin:0.5.2'
         classpath "com.github.samueltbrown:gradle-cucumber-plugin:0.7"
+        classpath 'org.cloudfoundry:cf-gradle-plugin:1.0.3'
     }
 }
 
@@ -19,6 +20,7 @@ apply plugin: 'scala'
 apply plugin: 'spring-boot'
 apply plugin: 'spawn'
 apply plugin: 'com.github.samueltbrown.cucumber'
+apply plugin: 'cloudfoundry'
 
 sourceCompatibility = 1.7
 
@@ -57,3 +59,37 @@ cucumber {
 cucumber.dependsOn startServer
 cucumber.finalizedBy stopServer
 check.dependsOn cucumber
+
+cloudfoundry {
+    file = file("${projectDir}/build/libs/${project.name}-${project.version}.jar")
+    buildpack = "https://github.com/marcoVermeulen/java-buildpack"
+    target = 'https://api.run.pivotal.io'
+    organization = envVariableAsGlobal("CF_ORG", true)
+    username = envVariableAsGlobal("CF_USERNAME", true)
+    password = envVariableAsGlobal("CF_PASSWORD", true)
+    space = envVariableAsGlobal("CF_SPACE", false)
+    application = envVariableAsGlobal("CF_APP", false)
+    domain = envVariableAsGlobal("CF_DOMAIN", true)
+    host = envVariableAsGlobal("CF_HOST", false)
+    uri = envVariableAsGlobal("CF_URI", false)
+    env = [
+            MONGO_HOST: envVariableAsGlobal("CF_MONGO_HOST", false),
+            MONGO_PORT: envVariableAsGlobal("CF_MONGO_PORT", false),
+            MONGO_DB_NAME: envVariableAsGlobal("CF_MONGO_DB_NAME", false),
+            MONGO_USERNAME: envVariableAsGlobal("CF_MONGO_USERNAME", false),
+            MONGO_PASSWORD: envVariableAsGlobal("CF_MONGO_PASSWORD", false),
+            CLIENT_ID: envVariableAsGlobal("CF_CLIENT_ID", false),
+            CLIENT_SECRET: envVariableAsGlobal("CF_CLIENT_SECRET", false),
+            AUTH_USERNAME: envVariableAsGlobal("CF_AUTH_USERNAME", true),
+            AUTH_PASSWORD: envVariableAsGlobal("CF_AUTH_PASSWORD", true)
+    ]
+}
+
+def envVariableAsGlobal(String envVar, boolean global) {
+    def env = global ? "" : determineEnvironment()
+    System.getenv("${envVar}${env}") ?: 'invalid'
+}
+
+def determineEnvironment() {
+    hasProperty("env") ? "_${env.toUpperCase()}" : '_LOCAL'
+}

@@ -14,4 +14,4 @@ if [[ "$RELEASE" == "1.0.0-SNAPSHOT" ]]; then
 fi
 
 echo "Environment: $ENV, Release: $RELEASE"
-./gradlew -Penv="$ENV" clean check #cfPush
+./gradlew -Penv="$ENV" clean check cfPush
