@@ -21,7 +21,6 @@ apply plugin: 'spawn'
 apply plugin: 'com.github.samueltbrown.cucumber'
 
 sourceCompatibility = 1.7
-version = "1.0-SNAPSHOT"
 
 repositories {
     jcenter()
