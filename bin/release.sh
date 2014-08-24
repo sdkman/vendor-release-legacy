@@ -26,5 +26,5 @@ git push -f origin "$BRANCH:$BRANCH"
 git tag "$VERSION"
 git push origin "$VERSION"
 
-#bach to master branch
+#back to master branch
 git checkout master
