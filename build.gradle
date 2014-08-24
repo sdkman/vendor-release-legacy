@@ -33,6 +33,8 @@ dependencies {
     compile "org.scala-lang:scala-library:2.11.2"
     compile "org.springframework.boot:spring-boot-starter-web"
     compile "org.springframework.boot:spring-boot-starter-data-mongodb"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-remote-shell"
     testCompile "org.scalatest:scalatest_2.11:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
     cucumberRuntime 'info.cukes:cucumber-jvm:1.1.8'
