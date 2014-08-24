@@ -1,3 +1,6 @@
+import com.wiredforcode.gradle.spawn.KillProcessTask
+import com.wiredforcode.gradle.spawn.SpawnProcessTask
+
 buildscript {
     repositories {
         jcenter()
@@ -5,6 +8,7 @@ buildscript {
     }
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE"
+        classpath 'com.wiredforcode:gradle-spawn-plugin:0.5.2'
         classpath "com.github.samueltbrown:gradle-cucumber-plugin:0.7"
     }
 }
@@ -13,9 +17,11 @@ buildscript {
 apply plugin: 'idea'
 apply plugin: 'scala'
 apply plugin: 'spring-boot'
-apply plugin: "com.github.samueltbrown.cucumber"
+apply plugin: 'spawn'
+apply plugin: 'com.github.samueltbrown.cucumber'
 
 sourceCompatibility = 1.7
+version = "1.0-SNAPSHOT"
 
 repositories {
     jcenter()
@@ -28,8 +34,16 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-mongodb"
     testCompile "org.scalatest:scalatest_2.11:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
-    cucumberRuntime 'info.cukes:cucumber-groovy:1.1.6'
+    cucumberRuntime 'info.cukes:cucumber-jvm:1.1.8'
+    cucumberRuntime 'info.cukes:cucumber-scala_2.11:1.1.8'
 }
+
+task startServer(type: SpawnProcessTask, dependsOn: 'assemble') {
+    command "java -jar ${projectDir}/build/libs/${project.name}-${project.version}.jar"
+    ready 'Started Application'
+}
+
+task stopServer(type: KillProcessTask)
 
 cucumber {
     formats = ['asyougo', 'json:build/cucumber.json', 'junit:build/cucumber.xml']
@@ -40,3 +54,7 @@ cucumber {
     strict = true
     dryRun = false
 }
+
+cucumber.dependsOn startServer
+cucumber.finalizedBy stopServer
+check.dependsOn cucumber
