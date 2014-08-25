@@ -50,18 +50,20 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
   @Qualifier("authenticationManagerBean")
   var authenticationManager: AuthenticationManager = null
 
-  override def configure(endpoints: AuthorizationServerEndpointsConfigurer) = endpoints
-    .tokenStore(tokenStore)
-    .authenticationManager(authenticationManager)
+  override def configure(endpoints: AuthorizationServerEndpointsConfigurer) =
+    endpoints
+      .tokenStore(tokenStore)
+      .authenticationManager(authenticationManager)
 
-  override def configure(clients: ClientDetailsServiceConfigurer) = clients
-    .inMemory()
-    .withClient(clientId)
-    .secret(clientSecret)
-    .authorizedGrantTypes(grantType)
-    .authorities(authority)
-    .scopes(clientScopes: _*)
-    .resourceIds(resourceId)
+  override def configure(clients: ClientDetailsServiceConfigurer) =
+    clients
+      .inMemory()
+      .withClient(clientId)
+      .secret(clientSecret)
+      .authorizedGrantTypes(grantType)
+      .authorities(authority)
+      .scopes(clientScopes: _*)
+      .resourceIds(resourceId)
 
 }
 
@@ -77,11 +79,12 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   @Value("#{systemEnvironment['AUTH_PASSWORD']}")
   var authPassword = "auth_password"
 
-  override def configure(auth: AuthenticationManagerBuilder) = auth
-    .inMemoryAuthentication()
-    .withUser(authUsername)
-    .password(authPassword)
-    .roles(role)
+  override def configure(auth: AuthenticationManagerBuilder) =
+    auth
+      .inMemoryAuthentication()
+      .withUser(authUsername)
+      .password(authPassword)
+      .roles(role)
 
   @Bean
   override def authenticationManagerBean = super.authenticationManagerBean
