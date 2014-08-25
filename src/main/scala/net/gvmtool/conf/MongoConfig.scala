@@ -13,7 +13,7 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
 @Configuration
-class MongoConfiguration extends AbstractMongoConfiguration {
+class MongoConfig extends AbstractMongoConfiguration {
 
   @Value("#{systemEnvironment['MONGO_HOST']}")
   var mongoHost = "localhost"
