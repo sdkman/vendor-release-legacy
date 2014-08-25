@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   val resourceId = "rest-service"
-  val announceRegex = "/announce/.*"
+  val announceRegex = "/release/.*"
   val adminRegex = "/admin/((?!health|info).)*"
 
   override def configure(httpSecurity: HttpSecurity) =
