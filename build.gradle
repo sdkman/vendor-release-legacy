@@ -36,6 +36,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-mongodb"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-starter-remote-shell"
+    compile "org.springframework.boot:spring-boot-starter-security"
+    compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
     testCompile "org.scalatest:scalatest_2.11:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
     cucumberRuntime 'info.cukes:cucumber-jvm:1.1.8'
