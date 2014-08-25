@@ -3,8 +3,11 @@ package net.gvmtool.conf
 import com.mongodb.MongoCredential.createMongoCRCredential
 import com.mongodb.{MongoClient, ServerAddress}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.{Bean, Configuration}
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.convert._
+import org.springframework.data.mongodb.core.mapping.MongoMappingContext
 
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -41,4 +44,21 @@ class MongoConfiguration extends AbstractMongoConfiguration {
       new MongoClient(serverAddress(mongoHost, mongoPort),
         credentials(mongoDbName, mongoUsername, mongoPassword))
   }
+
+  // hack used for removing _class field
+
+  def dbRefResolver = new DefaultDbRefResolver(mongoDbFactory)
+
+  def nullTypeMapper = new DefaultMongoTypeMapper(null)
+
+  def converter = new MappingMongoConverter(dbRefResolver, new MongoMappingContext)
+
+  def unmappedTypeConverter = {
+    converter.setTypeMapper(nullTypeMapper)
+    converter
+  }
+
+  @Bean
+  override def mongoTemplate: MongoTemplate = new MongoTemplate(mongoDbFactory, unmappedTypeConverter)
+
 }
