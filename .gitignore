@@ -1,5 +1,6 @@
 # Created by .gitignore support plugin (hsz.mobi)
 .gradle
+.gradletasknamecache
 .idea
 build
 gvm-broker-api.iml
