@@ -10,7 +10,6 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.1.5.RELEASE"
         classpath 'com.wiredforcode:gradle-spawn-plugin:0.5.2'
-        classpath "com.github.samueltbrown:gradle-cucumber-plugin:0.7"
         classpath 'org.cloudfoundry:cf-gradle-plugin:1.0.3'
     }
 }
@@ -20,10 +19,7 @@ apply plugin: 'idea'
 apply plugin: 'scala'
 apply plugin: 'spring-boot'
 apply plugin: 'spawn'
-apply plugin: 'com.github.samueltbrown.cucumber'
 apply plugin: 'cloudfoundry'
-
-sourceCompatibility = 1.7
 
 repositories {
     jcenter()
@@ -40,8 +36,26 @@ dependencies {
     compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
     testCompile "org.scalatest:scalatest_2.11:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
-    cucumberRuntime 'info.cukes:cucumber-jvm:1.1.8'
-    cucumberRuntime 'info.cukes:cucumber-scala_2.11:1.1.8'
+    testCompile "junit:junit:4.11"
+    testCompile "org.scalaj:scalaj-http_2.11:0.3.16"
+    testCompile "com.fasterxml.jackson.core:jackson-databind:2.4.1.2"
+    testCompile "com.fasterxml.jackson.module:jackson-module-scala_2.11:2.4.1"
+    testCompile 'info.cukes:cucumber-junit:1.1.8'
+    testCompile 'info.cukes:cucumber-scala_2.11:1.1.8'
+}
+
+configurations {
+    functTestCompile.extendsFrom testCompile
+    functTestRuntime.extendsFrom testRuntime
+}
+
+sourceSets {
+    functionalTest {
+        scala.srcDir file('src/fun/scala')
+        resources.srcDir     file('src/fun/resources')
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.functTestCompile
+        runtimeClasspath = output + compileClasspath + configurations.functTestRuntime
+    }
 }
 
 processResources {
@@ -55,19 +69,14 @@ task startServer(type: SpawnProcessTask, dependsOn: 'assemble') {
 
 task stopServer(type: KillProcessTask)
 
-cucumber {
-    formats = ['asyougo', 'json:build/cucumber.json', 'junit:build/cucumber.xml']
-    glueDirs = ['src/fun/scala', 'src/fun/steps']
-    featureDirs = ['src/fun/features']
-    tags = ['~@manual', '~@review']
-    monochrome = false
-    strict = true
-    dryRun = false
+task functionalTest(type: Test) {
+    testClassesDir = sourceSets.functionalTest.output.classesDir
+    classpath = sourceSets.functionalTest.runtimeClasspath
+    dependsOn startServer
+    finalizedBy stopServer
 }
 
-cucumber.dependsOn startServer
-cucumber.finalizedBy stopServer
-check.dependsOn cucumber
+check.dependsOn functionalTest
 
 cloudfoundry {
     file = file("${projectDir}/build/libs/${project.name}-${project.version}.jar")
