@@ -26,6 +26,8 @@ repositories {
     maven { url 'http://repo.spring.io/release' }
 }
 
+var scalaVersion = "2.11"
+
 dependencies {
     compile "org.scala-lang:scala-library:2.11.2"
     compile "org.springframework.boot:spring-boot-starter-web"
@@ -34,14 +36,15 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-remote-shell"
     compile "org.springframework.boot:spring-boot-starter-security"
     compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
-    testCompile "org.scalatest:scalatest_2.11:2.2.1"
+    testCompile "org.scalatest:scalatest_${scalaVersion}:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
     testCompile "junit:junit:4.11"
-    testCompile "org.scalaj:scalaj-http_2.11:0.3.16"
+    testCompile "org.scalaj:scalaj-http_${scalaVersion}:0.3.16"
     testCompile "com.fasterxml.jackson.core:jackson-databind:2.4.1.2"
-    testCompile "com.fasterxml.jackson.module:jackson-module-scala_2.11:2.4.1"
-    testCompile 'info.cukes:cucumber-junit:1.1.8'
-    testCompile 'info.cukes:cucumber-scala_2.11:1.1.8'
+    testCompile "com.fasterxml.jackson.module:jackson-module-scala_${scalaVersion}:2.4.1"
+    testCompile "info.cukes:cucumber-junit:1.1.8"
+    testCompile "info.cukes:cucumber-scala_${scalaVersion}:1.1.8"
+    testCompile "org.mongodb:casbah_${scalaVersion}:2.7.3"
 }
 
 configurations {
