@@ -2,7 +2,7 @@ package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
-import support.HttpUtils
+import support.Http
 
 import scala.collection.mutable.{Map => MMap}
 
@@ -17,11 +17,11 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   And( """^the Client is Authorised and Authenticated$""") { () =>
-    world.put("token", s"Bearer ${HttpUtils.obtainToken}")
+    world.put("token", s"Bearer ${Http.obtainToken}")
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
-    responseStatus = HttpUtils.statusWithToken(
+    responseStatus = Http.statusWithToken(
       endpoint, world.get("token").getOrElse("invalid_token"))
   }
 
