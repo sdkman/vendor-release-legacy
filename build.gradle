@@ -26,7 +26,7 @@ repositories {
     maven { url 'http://repo.spring.io/release' }
 }
 
-var scalaVersion = "2.11"
+def scalaVersion = "2.11"
 
 dependencies {
     compile "org.scala-lang:scala-library:2.11.2"
