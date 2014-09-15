@@ -17,12 +17,12 @@ import org.springframework.security.oauth2.provider.token.store.InMemoryTokenSto
 class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   val resourceId = "rest-service"
-  val announceRegex = "/release/.*"
+  val releaseRegex = "/release/.*"
   val adminRegex = "/admin/((?!health|info).)*"
 
   override def configure(httpSecurity: HttpSecurity) =
     httpSecurity.authorizeRequests()
-      .regexMatchers(HttpMethod.POST, announceRegex).authenticated()
+      .regexMatchers(HttpMethod.POST, releaseRegex).authenticated()
       .regexMatchers(HttpMethod.GET, adminRegex).authenticated()
 
   override def configure(resources: ResourceServerSecurityConfigurer) = resources.resourceId(resourceId)
