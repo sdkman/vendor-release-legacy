@@ -26,8 +26,7 @@ repositories {
     maven { url 'http://repo.spring.io/release' }
 }
 
-def scalaVersion = "2.11"
-
+ext.scalaVersion = "2.11"
 dependencies {
     compile "org.scala-lang:scala-library:2.11.2"
     compile "org.springframework.boot:spring-boot-starter-web"
@@ -36,15 +35,13 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-remote-shell"
     compile "org.springframework.boot:spring-boot-starter-security"
     compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
-    testCompile "org.scalatest:scalatest_${scalaVersion}:2.2.1"
     testCompile "org.mockito:mockito-all:1.9.5"
     testCompile "junit:junit:4.11"
-    testCompile "org.scalaj:scalaj-http_${scalaVersion}:0.3.16"
     testCompile "com.fasterxml.jackson.core:jackson-databind:2.4.1.2"
-    testCompile "com.fasterxml.jackson.module:jackson-module-scala_${scalaVersion}:2.4.1"
     testCompile "info.cukes:cucumber-junit:1.1.8"
-    testCompile "info.cukes:cucumber-scala_${scalaVersion}:1.1.8"
-    testCompile "org.mongodb:casbah_${scalaVersion}:2.7.3"
+    testCompile scalaLib("org.scalatest:scalatest:2.2.1")
+    testCompile scalaLib("org.scalaj:scalaj-http:0.3.16")
+    testCompile scalaLib("com.fasterxml.jackson.module:jackson-module-scala:2.4.1")
 }
 
 configurations {
@@ -113,4 +110,9 @@ def envVariableAsGlobal(String envVar, boolean global) {
 
 def determineEnvironment() {
     hasProperty("env") ? "_${env.toUpperCase()}" : '_LOCAL'
+}
+
+def scalaLib(String dep) {
+    def tokens = dep.tokenize(":")
+    "${tokens[0]}:${tokens[1]}_${scalaVersion}:${tokens[2]}"
 }
