@@ -39,9 +39,11 @@ dependencies {
     testCompile "junit:junit:4.11"
     testCompile "com.fasterxml.jackson.core:jackson-databind:2.4.1.2"
     testCompile "info.cukes:cucumber-junit:1.1.8"
+    testCompile scalaLib("info.cukes:cucumber-scala:1.1.8")
     testCompile scalaLib("org.scalatest:scalatest:2.2.1")
     testCompile scalaLib("org.scalaj:scalaj-http:0.3.16")
     testCompile scalaLib("com.fasterxml.jackson.module:jackson-module-scala:2.4.1")
+    testCompile scalaLib("org.mongodb:casbah:2.7.3")
 }
 
 configurations {
