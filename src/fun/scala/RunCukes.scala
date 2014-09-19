@@ -8,6 +8,6 @@ import org.junit.runner.RunWith
   strict = true,
   features = Array("features"),
   glue = Array("steps", "support"),
-  tags = Array("~@manual", "~@pending")
+  tags = Array("~@manual", "~@pending", "@release")
 )
 class RunCukes
