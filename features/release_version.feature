@@ -1,40 +1,44 @@
 Feature: Release a Candidate Version
 
-  #Create
-
-  @release
-  Scenario: Release a Default Version for a Candidate
-    Given a Candidate "groovy"
-    And an older Version "2.3.5" with URL http://dl.bintray.com/groovy/maven/groovy-binary-2.3.5.zip
-    And a new Version "2.3.6" with URL http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip
-    When the new Version is Released as Default
-    Then the "groovy" Version "2.3.6" was Released
-    And the Default Version for "groovy" is "2.3.6"
-
-  @release
-  Scenario: Release a Non-Default Version for a Candidate
-    Given a Candidate "groovy"
-    And an older Version "2.3.6" with URL http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip
-    And a new Version "2.4.0-beta-3" with URL http://dl.bintray.com/groovy/maven/groovy-binary-2.4.0-beta-3.zip
-    When the new Version is Released as Non-Default
-    Then the "groovy" Version "2.4.0-beta-3" was Released
-    And the Default Version for "groovy" is "2.3.6"
-
-  @release @pending
-  Scenario: The Candidate of the Release Version does not exist
-
-  #Default
+  Background:
+    Given endpoint "/oauth/token" exchanges credentials "auth_username" and "auth_password" for a bearer token
 
   @pending
-  Scenario: Select a new Default Version for a Candidate
+  Scenario: Release a Candidate Version
+    When a new Version is Released by POSTing JSON to "/release":
+      """|{
+         |  "candidate" : "groovy",
+         |  "version" : "2.3.6",
+         |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+         |}"""
+    Then the status received is 200
+    And a valid identifier is received in the response
+    And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published
 
   @pending
-  Scenario: The Candidate of the Version to Default does not exist
+  Scenario: Mark an existing Candidate Version as Default
+    Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
+    And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
+    And the existing Default "groovy" Version is "2.3.5"
+    When the Default is set by a PUT on endpoint "/default/groovy/2.3.6"
+    Then the status received is "OK"
+    And the message "default groovy version: 2.3.6" is received
+    And the Default "groovy" Version has changed to "2.3.6"
 
   @pending
-  Scenario: The Version to Default does not exist
+  Scenario: Attempt to mark a non-existent Candidate Version as Default
+    Given the existing Default "groovy" Version is "2.3.5"
+    And Candidate "groovy" Version "2.3.6" does not exists
+    When the Default is set by a PUT on endpoint "/default/groovy/2.3.6"
+    Then the status received is "BAD_REQUEST"
+    And the message "not a valid groovy version: 2.3.6" is received
 
-  #Remove
+  @pending
+  Scenario: Attempt to mark a non-existent Candidate Default
+    Given Candidate "groovee" does not exist
+    When the Default is set by a PUT on endpoint "/default/groovee/2.3.6"
+    Then the status received is "BAD_REQUEST"
+    And the message "not a valid candidate: groovy" is received
 
   @pending
   Scenario: Remove a Version from a Candidate

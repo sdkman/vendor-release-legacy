@@ -12,29 +12,22 @@ object Mongo {
 
   def dropCollection(coll: MongoCollection) = coll.drop()
 
-  def saveNonDefault(coll: MongoCollection, candidate: String, version: String, url: String) = {
-    val candidateDBO =
-      MongoDBObject("_id" -> "1234", "candidate" -> candidate, "default" -> "other",
-        "versions" -> MongoDBList(
-          MongoDBObject("version" -> version, "url" -> url)))
-    coll.save(candidateDBO)
-  }
+  def versionPublished(coll: MongoCollection, candidate: String, version: String, url: String): Boolean =
+    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url)).isDefined
 
-  def hasCandidateVersion(coll: MongoCollection, candidate: String, version: String): Boolean = {
-    coll.findOne(query(candidate), filter).exists { t =>
-      val matches = for {
-        versionDBO <- t.expand[List[BasicDBObject]]("versions").get
-        v <- versionDBO.getAs[String]("version")
-      } yield (v == version)
-      matches.contains(true)
-    }
-  }
+  def saveVersion(coll: MongoCollection, candidate: String, version: String, url: String) =
+    coll.save(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url))
+
+  def saveCandidate(coll: MongoCollection, candidate: String, default: String) =
+    coll.save(MongoDBObject("candidate" -> candidate, "default" -> default))
 
   def isDefault(coll: MongoCollection, candidate: String, version: String): Boolean =
-    coll.findOne(query(candidate)).exists { t => t.get("default") == version}
+    coll.findOne(MongoDBObject("candidate" -> candidate, "default" -> version)).isDefined
 
-  private val filter = MongoDBObject("versions" -> 1, "_id" -> false)
+  def versionExists(coll: MongoCollection, candidate: String, version: String): Boolean =
+    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version)).isDefined
 
-  private def query(candidate: String) = MongoDBObject("candidate" -> candidate)
+  def candidateExists(coll: MongoCollection, candidate: String): Boolean =
+    coll.findOne(MongoDBObject("candidate" -> candidate)).isDefined
 
 }

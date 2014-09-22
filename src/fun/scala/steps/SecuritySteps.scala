@@ -1,5 +1,8 @@
 package steps
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
+import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import support.Http
@@ -7,6 +10,9 @@ import support.Http
 import scala.collection.mutable.{Map => MMap}
 
 class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
+
+  val mapper = new ObjectMapper() with ScalaObjectMapper
+  mapper.registerModule(DefaultScalaModule)
 
   val world = MMap[String, String]()
   val statusCodes = Map("Unauthorized" -> 401, "OK" -> 200)
@@ -17,7 +23,11 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   And( """^the Client is Authorised and Authenticated$""") { () =>
-    world.put("token", s"Bearer ${Http.obtainToken}")
+    val str = Http.obtainToken("/oauth/token", "auth_username", "auth_password").asString
+    val token = mapper.readValue[Map[String, String]](str)
+      .get("access_token")
+      .getOrElse("invalid_token")
+    world.put("token", s"Bearer $token")
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
