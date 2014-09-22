@@ -1,4 +1,4 @@
-package net.gvmtool.conf
+package net.gvmtool.release.conf
 
 import org.springframework.beans.factory.annotation.{Autowired, Qualifier, Value}
 import org.springframework.context.annotation.{Bean, Configuration}

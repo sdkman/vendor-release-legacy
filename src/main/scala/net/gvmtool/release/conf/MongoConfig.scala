@@ -1,4 +1,4 @@
-package net.gvmtool.conf
+package net.gvmtool.release.conf
 
 import com.mongodb.MongoCredential.createMongoCRCredential
 import com.mongodb.{MongoClient, ServerAddress}
