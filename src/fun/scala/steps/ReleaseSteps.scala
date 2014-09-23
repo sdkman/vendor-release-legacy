@@ -75,7 +75,7 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
     mapper.readValue[Map[String, String]](request.asString).get("message") match {
-      case Some(message) => message shouldBe (message)
+      case Some(m) => m shouldBe message
       case None => fail("no message found")
     }
   }
