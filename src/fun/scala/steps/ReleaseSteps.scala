@@ -36,13 +36,12 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
 
   Given( """^endpoint "(.*?)" exchanges credentials "(.*?)" and "(.*?)" for a bearer token$""") { (endpoint: String, username: String, password: String) =>
     val str = Http.obtainToken(endpoint, username, password).asString
-    token = mapper.readValue[Map[String, String]](str)
-      .get("access_token")
-      .getOrElse("invalid_token")
+    val bt = mapper.readValue[Map[String, String]](str).getOrElse("access_token", "invalid_token")
+    token = s"Bearer $bt"
   }
 
-  When( """^a new Version is Released by POSTing JSON to "(.*?)":$""") { (endpoint: String, json: String) =>
-    request = Http.release(endpoint, json.stripMargin, token)
+  When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
+    request = Http.postJson(endpoint, json.stripMargin, token)
   }
 
   Then( """^the status received is (.*?)$""") { (responseCode: Int) =>

@@ -3,10 +3,10 @@ Feature: Release a Candidate Version
   Background:
     Given endpoint "/oauth/token" exchanges credentials "auth_username" and "auth_password" for a bearer token
 
-  @pending
   Scenario: Release a Candidate Version
-    When a new Version is Released by POSTing JSON to "/release":
-      """|{
+    When a JSON POST on the "/release" endpoint:
+    """
+         |{
          |  "candidate" : "groovy",
          |  "version" : "2.3.6",
          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
