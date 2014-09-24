@@ -15,6 +15,8 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
 
+  val statusCodes = Map("OK" -> 200, "CREATED" -> 201, "BAD_REQUEST" -> 400, "UNAUTHORIZED" -> 401)
+
   val mongoDb = Mongo.primeDatabase("gvm")
   var candidateColl: MongoCollection = null
   var versionColl: MongoCollection = null
@@ -44,8 +46,8 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
     request = Http.postJson(endpoint, json.stripMargin, token)
   }
 
-  Then( """^the status received is (.*?)$""") { (responseCode: Int) =>
-    request.responseCode shouldBe responseCode
+  Then( """^the status received is "(.*)"$""") { (status: String) =>
+    request.responseCode shouldBe statusCodes(status)
   }
 
   Then( """^a valid identifier is received in the response$""") { () =>
