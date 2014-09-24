@@ -44,21 +44,4 @@ class MongoConfig extends AbstractMongoConfiguration {
       new MongoClient(serverAddress(mongoHost, mongoPort),
         credentials(mongoDbName, mongoUsername, mongoPassword))
   }
-
-  // hack used for removing _class field
-
-  def dbRefResolver = new DefaultDbRefResolver(mongoDbFactory)
-
-  def nullTypeMapper = new DefaultMongoTypeMapper(null)
-
-  def converter = new MappingMongoConverter(dbRefResolver, new MongoMappingContext)
-
-  def unmappedTypeConverter = {
-    converter.setTypeMapper(nullTypeMapper)
-    converter
-  }
-
-  @Bean
-  override def mongoTemplate: MongoTemplate = new MongoTemplate(mongoDbFactory, unmappedTypeConverter)
-
 }

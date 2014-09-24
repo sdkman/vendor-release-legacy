@@ -2,6 +2,7 @@ package net.gvmtool.release.version
 
 import net.gvmtool.release.request.VersionRequest
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository
 trait VersionRepository extends MongoRepository[Version, ObjectId]
 
 @Document(collection = "versions")
+@TypeAlias("Version")
 case class Version(id: ObjectId, candidate: String, version: String, url: String)
 
 object Version {
