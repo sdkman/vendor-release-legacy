@@ -32,8 +32,17 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
     request = Http.post(endpoint, token)
   }
 
-  When( """^the "(.*?)" endpoint is accessed with:$""") { (endpoint: String, payload: String) =>
-    request = Http.postJson(endpoint, payload.stripMargin, token)
+  When( """^the "(.*?)" endpoint receives a POST with valid payload$""") { (endpoint: String) =>
+    val payload =
+      """
+        |{
+        |  "candidate" : "groovy",
+        |  "version" : "2.3.6",
+        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+        |}
+      """.stripMargin
+
+    request = Http.postJson(endpoint, payload, token)
   }
 
   And( """^an "(.*)" status is returned$""") { (status: String) =>
