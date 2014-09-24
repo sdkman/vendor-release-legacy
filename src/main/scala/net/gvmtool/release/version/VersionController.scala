@@ -1,7 +1,7 @@
 package net.gvmtool.release.version
 
 import net.gvmtool.release.request.VersionRequest
-import net.gvmtool.release.response.{ServiceUnavailable, Created}
+import net.gvmtool.release.response.responses._
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.web.bind.annotation.RequestMethod.POST
