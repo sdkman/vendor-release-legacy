@@ -8,8 +8,8 @@ import org.junit.runner.RunWith
 import org.mockito.Matchers.argThat
 import org.mockito.Mockito._
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.{ShouldMatchers, WordSpec}
 import org.scalatest.mock.MockitoSugar
+import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.{HttpStatus, ResponseEntity}
 
 @RunWith(classOf[JUnitRunner])
@@ -18,7 +18,7 @@ class VersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
   val repository = mock[VersionRepository]
 
   "version controller" should {
-    "successfully publish a new candidate version" in new ControllerUnderTest {
+    "create a new candidate version" in new ControllerUnderTest {
       //arrange
       val candidate = "groovy"
       val version = "2.3.6"
@@ -33,7 +33,7 @@ class VersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val response: ResponseEntity[SuccessResponse] = publish(request)
 
       //assert
-      response.getStatusCode shouldBe HttpStatus.OK
+      response.getStatusCode shouldBe HttpStatus.CREATED
       response.getBody.getId shouldBe "54205c4019b02458bdd828db"
       verify(repository).save(versionObj)
     }

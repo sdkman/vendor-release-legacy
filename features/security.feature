@@ -8,7 +8,7 @@ Feature: Security
   Scenario: The Release endpoints CAN be Accessed when Authorised
     Given the Client is Authorised and Authenticated
     When the "/release" endpoint receives a POST with valid payload
-    Then an "OK" status is returned
+    Then an "Created" status is returned
 
   Scenario: The Admin Mappings endpoint can NOT be Accessed without Authorisation
     Given the Client is not Authorised and Authenticated

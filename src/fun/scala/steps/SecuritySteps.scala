@@ -15,7 +15,7 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   mapper.registerModule(DefaultScalaModule)
 
   var token = "invalid_token"
-  val statusCodes = Map("Unauthorized" -> 401, "OK" -> 200)
+  val statusCodes = Map("Unauthorized" -> 401, "OK" -> 200, "Created" -> 201)
   var request: Request = null
 
   And( """^the Client is not Authorised and Authenticated$""") { () =>

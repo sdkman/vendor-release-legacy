@@ -11,7 +11,7 @@ Feature: Release a Candidate Version
          |  "version" : "2.3.6",
          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
          |}"""
-    Then the status received is 200
+    Then the status received is 201
     And a valid identifier is received in the response
     And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published
 
