@@ -1,10 +1,11 @@
-package net.gvmtool.release.response
+package net.gvmtool
 
+import net.gvmtool.release.response.{ErrorResponse, SuccessResponse}
 import net.gvmtool.release.version.Version
 import org.springframework.http.HttpStatus._
 import org.springframework.http.ResponseEntity
 
-package object responses {
+package object release {
   def Created(v: Version) =
     new ResponseEntity[SuccessResponse](new SuccessResponse(v.id.toString), CREATED)
 

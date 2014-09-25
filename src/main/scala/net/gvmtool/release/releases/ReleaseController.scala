@@ -1,13 +1,14 @@
-package net.gvmtool.release.version
+package net.gvmtool.release.releases
 
+import net.gvmtool.release._
 import net.gvmtool.release.request.VersionRequest
-import net.gvmtool.release.response.responses._
+import net.gvmtool.release.version.{Version, VersionRepository}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.dao.DataAccessException
 import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation._
 
-trait VersionController {
+trait ReleaseController {
 
   val repo: VersionRepository
 
@@ -20,4 +21,4 @@ trait VersionController {
 }
 
 @RestController
-class Versions @Autowired()(val repo: VersionRepository) extends VersionController
+class Releases @Autowired()(val repo: VersionRepository) extends ReleaseController

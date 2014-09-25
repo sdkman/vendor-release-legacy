@@ -1,7 +1,8 @@
-package net.gvmtool.release.version
+package net.gvmtool.release.releases
 
 import net.gvmtool.release.request.VersionRequest
 import net.gvmtool.release.response.SuccessResponse
+import net.gvmtool.release.version.{Version, VersionRepository}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs
 import org.junit.runner.RunWith
@@ -39,7 +40,7 @@ class VersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
     }
   }
 
-  sealed trait ControllerUnderTest extends VersionController {
+  sealed trait ControllerUnderTest extends ReleaseController {
     val repo = repository
   }
 }
