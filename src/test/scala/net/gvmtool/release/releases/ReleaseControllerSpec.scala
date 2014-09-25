@@ -14,11 +14,11 @@ import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.{HttpStatus, ResponseEntity}
 
 @RunWith(classOf[JUnitRunner])
-class VersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val repository = mock[VersionRepository]
 
-  "version controller" should {
+  "release controller" should {
     "create a new candidate version" in new ControllerUnderTest {
       //arrange
       val candidate = "groovy"
