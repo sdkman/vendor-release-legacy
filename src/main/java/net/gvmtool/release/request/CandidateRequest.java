@@ -9,10 +9,7 @@ public class CandidateRequest {
     private String candidate;
 
     @NotBlank(message = "Version must be given.")
-    private String version;
-
-    @NotBlank(message = "URL must be provided.")
-    private String url;
+    private String defaultVersion;
 
     public CandidateRequest() {
         //needs default constructor
@@ -20,31 +17,24 @@ public class CandidateRequest {
 
     @JsonCreator
     public CandidateRequest(@JsonProperty("candidate") String candidate,
-            @JsonProperty("version") String version,
-            @JsonProperty("url") String url) {
+            @JsonProperty("default") String defaultVersion) {
         this.candidate = candidate;
-        this.version = version;
-        this.url = url;
+        this.defaultVersion = defaultVersion;
     }
 
     public String getCandidate() {
         return candidate;
     }
 
-    public String getVersion() {
-        return version;
-    }
-
-    public String getUrl() {
-        return url;
+    public String getDefaultVersion() {
+        return defaultVersion;
     }
 
     @Override
     public String toString() {
         return "CandidateRequest{" +
                 "candidate='" + candidate + '\'' +
-                ", version='" + version + '\'' +
-                ", url='" + url + '\'' +
+                ", defaultVersion='" + defaultVersion + '\'' +
                 '}';
     }
 }

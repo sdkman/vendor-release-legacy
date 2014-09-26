@@ -33,8 +33,8 @@ object Http {
       )
   }
 
-  def default(endpoint: String, token: String): Request = {
-    HttpClient(s"$host$endpoint")
+  def putJson(endpoint: String, json: String, token: String): Request = {
+    HttpClient.postData(s"$host$endpoint", json)
       .method("PUT")
       .headers(
         "Authorization" -> token,

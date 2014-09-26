@@ -15,7 +15,7 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   val mapper = new ObjectMapper() with ScalaObjectMapper
   mapper.registerModule(DefaultScalaModule)
 
-  val statusCodes = Map("OK" -> 200, "CREATED" -> 201, "BAD_REQUEST" -> 400, "UNAUTHORIZED" -> 401)
+  val statusCodes = Map("OK" -> 200, "CREATED" -> 201, "ACCEPTED" -> 202, "BAD_REQUEST" -> 400, "UNAUTHORIZED" -> 401)
 
   val mongoDb = Mongo.primeDatabase("gvm")
   var candidateColl: MongoCollection = null
@@ -71,8 +71,8 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
     Mongo.saveCandidate(candidateColl, candidate, version)
   }
 
-  When( """^the Default is set by a PUT on endpoint "(.*?)"$""") { (endpoint: String) =>
-    request = Http.default(endpoint, token)
+  When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
+    request = Http.putJson(endpoint, payload.stripMargin, token)
   }
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>

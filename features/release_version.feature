@@ -13,15 +13,21 @@ Feature: Release a Candidate Version
          |}"""
     Then the status received is "CREATED"
     And a valid identifier is received in the response
+    And the message "released groovy version: 2.3.6" is received
     And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published
 
-  @pending
   Scenario: Mark an existing Candidate Version as Default
     Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"
-    When the Default is set by a PUT on endpoint "/default/groovy/2.3.6"
-    Then the status received is "OK"
+    When a JSON PUT on the "/default" endpoint:
+    """
+        |{
+        |   "candidate" : "groovy",
+        |   "default" : "2.3.6"
+        |}
+    """
+    Then the status received is "ACCEPTED"
     And the message "default groovy version: 2.3.6" is received
     And the Default "groovy" Version has changed to "2.3.6"
 
