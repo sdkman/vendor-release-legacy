@@ -1,16 +1,11 @@
 package net.gvmtool.release.conf
 
-import com.mongodb.MongoCredential.createMongoCRCredential
-import com.mongodb.{MongoClient, ServerAddress}
+import com.mongodb.casbah.MongoCredential.createMongoCRCredential
+import com.mongodb.{Mongo, ServerAddress}
+import com.mongodb.casbah.{MongoClient, MongoCredential}
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.{Bean, Configuration}
+import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.data.mongodb.core.convert._
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext
-
-import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 @Configuration
 class MongoConfig extends AbstractMongoConfiguration {
@@ -35,13 +30,17 @@ class MongoConfig extends AbstractMongoConfiguration {
   def serverAddress(host: String, port: String) = new ServerAddress(host, port.toInt)
 
   def credentials(dbName: String, username: String, password: String) =
-    ListBuffer(createMongoCRCredential(username, dbName, password.toCharArray))
+    List(createMongoCRCredential(username, dbName, password.toCharArray))
 
-  override def mongo = mongoHost match {
+  override def mongo: Mongo = selectMongo.underlying
+
+  def selectMongo = mongoHost match {
     case "localhost" =>
-      new MongoClient
+      MongoClient(
+        serverAddress(mongoHost, mongoPort))
     case _ =>
-      new MongoClient(serverAddress(mongoHost, mongoPort),
+      MongoClient(
+        serverAddress(mongoHost, mongoPort),
         credentials(mongoDbName, mongoUsername, mongoPassword))
   }
 }
