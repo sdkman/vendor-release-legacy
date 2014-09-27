@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath "org.springframework.boot:spring-boot-gradle-plugin:1.1.7.RELEASE"
         classpath 'com.wiredforcode:gradle-spawn-plugin:0.5.2'
-        classpath 'org.cloudfoundry:cf-gradle-plugin:1.0.3'
+        classpath 'org.cloudfoundry:cf-gradle-plugin:1.0.4'
     }
 }
 
