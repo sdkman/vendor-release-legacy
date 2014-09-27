@@ -1,8 +1,8 @@
 package net.gvmtool.release.conf
 
+import com.mongodb.casbah.MongoClient
 import com.mongodb.casbah.MongoCredential.createMongoCRCredential
 import com.mongodb.{Mongo, ServerAddress}
-import com.mongodb.casbah.{MongoClient, MongoCredential}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
