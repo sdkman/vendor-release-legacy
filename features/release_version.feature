@@ -35,14 +35,26 @@ Feature: Release a Candidate Version
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default "groovy" Version is "2.3.5"
     And Candidate "groovy" Version "2.3.6" does not exists
-    When the Default is set by a PUT on endpoint "/default/groovy/2.3.6"
+    When a JSON PUT on the "/default" endpoint:
+    """
+        |{
+        |   "candidate" : "groovy",
+        |   "default" : "2.3.6"
+        |}
+    """
     Then the status received is "BAD_REQUEST"
     And the message "not a valid groovy version: 2.3.6" is received
 
   @pending
   Scenario: Attempt to mark a non-existent Candidate Default
     Given Candidate "groovee" does not exist
-    When the Default is set by a PUT on endpoint "/default/groovee/2.3.6"
+    When a JSON PUT on the "/default" endpoint:
+    """
+        |{
+        |   "candidate" : "groovee",
+        |   "default" : "2.3.6"
+        |}
+    """
     Then the status received is "BAD_REQUEST"
     And the message "not a valid candidate: groovy" is received
 
