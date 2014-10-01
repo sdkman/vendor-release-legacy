@@ -1,8 +1,8 @@
 package net.gvmtool.release.releases
 
-import net.gvmtool.release.request.VersionRequest
+import net.gvmtool.release.request.ReleaseRequest
 import net.gvmtool.release.response.SuccessResponse
-import net.gvmtool.release.version.{Version, VersionRepository}
+import net.gvmtool.release.version.{Version, VersionRepo}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs
 import org.junit.runner.RunWith
@@ -16,7 +16,7 @@ import org.springframework.http.{HttpStatus, ResponseEntity}
 @RunWith(classOf[JUnitRunner])
 class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
-  val repository = mock[VersionRepository]
+  val repository = mock[VersionRepo]
 
   "release controller" should {
     "create a new candidate version" in new ControllerUnderTest {
@@ -24,7 +24,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val candidate = "groovy"
       val version = "2.3.6"
       val url = "http://somehost/groovy-binary-2.3.6.zip"
-      val request = new VersionRequest(candidate, version, url)
+      val request = new ReleaseRequest(candidate, version, url)
       val versionObj = Version(null, candidate, version, url)
 
       val persisted = versionObj.copy(id = new ObjectId("54205c4019b02458bdd828db"))
