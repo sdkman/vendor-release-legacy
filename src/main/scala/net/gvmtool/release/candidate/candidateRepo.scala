@@ -8,10 +8,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.query.Criteria._
 import org.springframework.data.mongodb.core.query.Query._
 import org.springframework.data.mongodb.core.query.Update._
+import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-class CandidateRepository @Autowired()(val mongoTemplate: MongoTemplate) {
+trait CandidateGeneralRepo extends MongoRepository[Candidate, ObjectId]
+
+@Repository
+class CandidateUpdateRepo @Autowired()(val mongoTemplate: MongoTemplate)  {
   def updateDefault(candidate: Candidate): Candidate =
     mongoTemplate.findAndModify(
       query(where("candidate").is(candidate.candidate)),
