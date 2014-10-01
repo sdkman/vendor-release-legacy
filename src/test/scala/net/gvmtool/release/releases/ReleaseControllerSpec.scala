@@ -16,7 +16,7 @@ import org.springframework.http.{HttpStatus, ResponseEntity}
 @RunWith(classOf[JUnitRunner])
 class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
-  val repository = mock[VersionRepo]
+  val mockVersionRepo = mock[VersionRepo]
 
   "release controller" should {
     "create a new candidate version" in new ControllerUnderTest {
@@ -28,7 +28,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val versionObj = Version(null, candidate, version, url)
 
       val persisted = versionObj.copy(id = new ObjectId("54205c4019b02458bdd828db"))
-      when(repository.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
+      when(mockVersionRepo.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
 
       //act
       val response: ResponseEntity[SuccessResponse] = publish(request)
@@ -36,11 +36,11 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       //assert
       response.getStatusCode shouldBe HttpStatus.CREATED
       response.getBody.getId shouldBe "54205c4019b02458bdd828db"
-      verify(repository).save(versionObj)
+      verify(mockVersionRepo).save(versionObj)
     }
   }
 
   sealed trait ControllerUnderTest extends ReleaseController {
-    val repo = repository
+    val repo = mockVersionRepo
   }
 }
