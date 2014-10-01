@@ -6,9 +6,9 @@ import net.gvmtool.release.version.Version
 import org.springframework.http.HttpStatus._
 import org.springframework.http.ResponseEntity
 
-package object release {
-  def Accepted(c: Candidate, newVersion: String) =
-    new ResponseEntity[SuccessResponse](new SuccessResponse(c.id.toString, s"default ${c.candidate} version: ${newVersion}"), ACCEPTED)
+package object status {
+  def Accepted(c: Candidate) =
+    new ResponseEntity[SuccessResponse](new SuccessResponse(c.id.toString, s"default ${c.candidate} version: ${c.default}"), ACCEPTED)
 
   def Created(v: Version) =
     new ResponseEntity[SuccessResponse](new SuccessResponse(v.id.toString, s"released ${v.candidate} version: ${v.version}"), CREATED)
