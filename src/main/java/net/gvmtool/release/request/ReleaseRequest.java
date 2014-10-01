@@ -3,19 +3,19 @@ package net.gvmtool.release.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VersionRequest {
+public class ReleaseRequest {
     private String candidate;
     private String version;
     private String url;
 
-    public VersionRequest() {
+    public ReleaseRequest() {
         //do not remove
     }
 
     @JsonCreator
-    public VersionRequest(
+    public ReleaseRequest(
             @JsonProperty("candidate") String candidate,
-            @JsonProperty("versions") String version,
+            @JsonProperty("version") String version,
             @JsonProperty("url") String url) {
         this.candidate = candidate;
         this.version = version;

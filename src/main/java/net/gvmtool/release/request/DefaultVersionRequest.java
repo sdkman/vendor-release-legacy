@@ -4,20 +4,20 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotBlank;
 
-public class CandidateRequest {
+public class DefaultVersionRequest {
     @NotBlank(message = "Candidate name must not be blank.")
     private String candidate;
 
-    @NotBlank(message = "Version must be given.")
+    @NotBlank(message = "Version must be provided.")
     private String defaultVersion;
 
-    public CandidateRequest() {
+    public DefaultVersionRequest() {
         //needs default constructor
     }
 
     @JsonCreator
-    public CandidateRequest(@JsonProperty("candidate") String candidate,
-            @JsonProperty("default") String defaultVersion) {
+    public DefaultVersionRequest(@JsonProperty("candidate") String candidate,
+                                 @JsonProperty("default") String defaultVersion) {
         this.candidate = candidate;
         this.defaultVersion = defaultVersion;
     }
