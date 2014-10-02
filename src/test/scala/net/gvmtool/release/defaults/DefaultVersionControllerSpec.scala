@@ -1,8 +1,9 @@
 package net.gvmtool.release.defaults
 
-import net.gvmtool.release.candidate.{Candidate, CandidateRepository}
-import net.gvmtool.release.request.CandidateRequest
+import net.gvmtool.release.candidate.{Candidate, CandidateUpdateRepo}
+import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response.SuccessResponse
+import net.gvmtool.release.version.{Version, VersionRepo}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs._
 import org.mockito.Matchers._
@@ -13,34 +14,60 @@ import org.springframework.http.{HttpStatus, ResponseEntity}
 
 class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
-  val repository = mock[CandidateRepository]
+  val mockCandidateUpdateRepo = mock[CandidateUpdateRepo]
+  val mockVersionRepo = mock[VersionRepo]
 
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
-      //arrange
+      //given
       val candidate = "groovy"
       val version = "2.3.6"
-      val candidateRequest = new CandidateRequest(candidate, version)
+      val request = new DefaultVersionRequest(candidate, version)
 
       val candidateObj = Candidate(candidate, version)
-
       val persisted = candidateObj.copy(id = new ObjectId("5423333bba78831a730c18e2"))
-      when(repository.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persisted)
 
-      //act
-      val response: ResponseEntity[SuccessResponse] = default(candidateRequest)
+      val versionFound = Version(
+        id = new ObjectId("5426b99bba78e60054fe48ca"), candidate, version,
+        url = "http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip")
 
-      //assert
+      when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionFound)
+      when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persisted)
+
+      //when
+      val response: ResponseEntity[SuccessResponse] = default(request)
+
+      //then
       response.getStatusCode shouldBe HttpStatus.ACCEPTED
       response.getBody.getId shouldBe "5423333bba78831a730c18e2"
       response.getBody.getMessage shouldBe "default groovy version: 2.3.6"
 
-      verify(repository).updateDefault(argThat[Candidate](samePropertyValuesAs(persisted)))
+      verify(mockVersionRepo).findByCandidateAndVersion(candidate, version)
+      verify(mockCandidateUpdateRepo).updateDefault(argThat[Candidate](samePropertyValuesAs(persisted)))
+    }
+
+    "not mark an invalid candidate version as default declaring bad request" in new ControllerUnderTest {
+      //given
+      val candidate = "groovy"
+      val version = "9.9.9"
+      val request = new DefaultVersionRequest(candidate, version)
+
+      when(versionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(null)
+
+      //when
+      val e = intercept[VersionNotFoundException] {
+        default(request)
+      }
+
+      //then
+      e.getMessage shouldBe "invalid candidate version: groovy 9.9.9"
+      verify(versionRepo).findByCandidateAndVersion(candidate, version)
     }
   }
 
   trait ControllerUnderTest extends DefaultVersionController {
-    val candidateRepo = repository
+    val candidateUpdateRepo = mockCandidateUpdateRepo
+    val versionRepo = mockVersionRepo
   }
 
 }

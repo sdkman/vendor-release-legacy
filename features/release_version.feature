@@ -31,7 +31,6 @@ Feature: Release a Candidate Version
     And the message "default groovy version: 2.3.6" is received
     And the Default "groovy" Version has changed to "2.3.6"
 
-  @pending
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default "groovy" Version is "2.3.5"
     And Candidate "groovy" Version "2.3.6" does not exists
@@ -43,7 +42,7 @@ Feature: Release a Candidate Version
         |}
     """
     Then the status received is "BAD_REQUEST"
-    And the message "not a valid groovy version: 2.3.6" is received
+    And the message "invalid candidate version: groovy 2.3.6" is received
 
   @pending
   Scenario: Attempt to mark a non-existent Candidate Default

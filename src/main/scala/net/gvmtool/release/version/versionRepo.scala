@@ -1,6 +1,6 @@
 package net.gvmtool.release.version
 
-import net.gvmtool.release.request.ReleaseRequest
+import net.gvmtool.release.request.{DefaultVersionRequest, ReleaseRequest}
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
@@ -8,7 +8,9 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-trait VersionRepo extends MongoRepository[Version, ObjectId]
+trait VersionRepo extends MongoRepository[Version, ObjectId] {
+  def findByCandidateAndVersion(candidate: String, version: String): Version = ???
+}
 
 @Document(collection = "versions")
 @TypeAlias("Version")

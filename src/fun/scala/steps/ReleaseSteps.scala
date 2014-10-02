@@ -8,7 +8,9 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import support.{Http, Mongo}
 
+import scala.util.Try
 import scalaj.http.Http.Request
+import scalaj.http.HttpException
 
 class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
 
@@ -76,21 +78,29 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
-    mapper.readValue[Map[String, String]](request.asString).get("message") match {
-      case Some(m) => m shouldBe message
-      case None => fail("no message found")
+    val result = Try {
+      request.asString
+    }.recover {
+      case e: HttpException => e.body
     }
+    assertMessageFromRawJson(result.get, message)
   }
+
+  private def assertMessageFromRawJson(json: String, message: String) = assert(extractMessage(json) == message)
+
+  private def extractMessage(str: String) =
+    mapper.readValue[Map[String, String]](str)
+      .getOrElse("message", throw new RuntimeException)
 
   Then( """^the Default "(.*?)" Version has changed to "(.*?)"$""") { (candidate: String, version: String) =>
     Mongo.isDefault(candidateColl, candidate, version) shouldBe true
   }
 
   Given( """^Candidate "(.*?)" Version "(.*?)" does not exists$""") { (candidate: String, version: String) =>
-    Mongo.versionExists(versionColl, candidate, version)
+    Mongo.versionExists(versionColl, candidate, version) shouldBe false
   }
 
   Given( """^Candidate "(.*?)" does not exist$""") { (candidate: String) =>
-    Mongo.candidateExists(candidateColl, candidate)
+    Mongo.candidateExists(candidateColl, candidate) shouldBe false
   }
 }
