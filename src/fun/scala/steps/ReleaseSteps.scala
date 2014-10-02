@@ -8,7 +8,6 @@ import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import support.{Http, Mongo}
 
-import scala.util.Try
 import scalaj.http.Http.Request
 import scalaj.http.HttpException
 
@@ -78,19 +77,14 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
-    val result = Try {
-      request.asString
-    }.recover {
-      case e: HttpException => e.body
+    try {
+      extractMessage(request.asString) shouldBe message
+    } catch {
+      case e: HttpException => extractMessage(e.body) shouldBe message
     }
-    assertMessageFromRawJson(result.get, message)
   }
 
-  private def assertMessageFromRawJson(json: String, message: String) = assert(extractMessage(json) == message)
-
-  private def extractMessage(str: String) =
-    mapper.readValue[Map[String, String]](str)
-      .getOrElse("message", throw new RuntimeException)
+  def extractMessage(str: String) = mapper.readValue[Map[String, String]](str).getOrElse("message", "invalid")
 
   Then( """^the Default "(.*?)" Version has changed to "(.*?)"$""") { (candidate: String, version: String) =>
     Mongo.isDefault(candidateColl, candidate, version) shouldBe true
