@@ -3,9 +3,8 @@ package net.gvmtool.release.releases
 import net.gvmtool.release.candidate.{CandidateGeneralRepo, CandidateNotFoundException}
 import net.gvmtool.release.request.ReleaseRequest
 import net.gvmtool.release.version.{Version, VersionRepo}
-import net.gvmtool.status.{BadRequest, Created, ServiceUnavailable}
+import net.gvmtool.status.Created
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.dao.DataAccessException
 import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation._
 
@@ -20,12 +19,6 @@ trait ReleaseController {
     Option(candidateRepo.findByCandidate(request.getCandidate)).map { c =>
       Created(versionRepo.save(Version(request)))
     }.getOrElse(throw CandidateNotFoundException(request.getCandidate))
-
-  @ExceptionHandler
-  def handle(e: CandidateNotFoundException) = BadRequest(e.getMessage)
-
-  @ExceptionHandler
-  def handle(e: DataAccessException) = ServiceUnavailable(e.getMessage)
 
 }
 

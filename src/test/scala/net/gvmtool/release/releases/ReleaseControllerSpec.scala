@@ -62,13 +62,6 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       e.getMessage shouldBe "not a valid candidate: groovee"
       verify(mockCandidateRepo).findByCandidate(candidate)
     }
-
-    "handle candidate not found exceptions with error response" in new ControllerUnderTest {
-      val candidate = "groovee"
-      val response = handle(CandidateNotFoundException(candidate))
-      response.getStatusCode shouldBe HttpStatus.BAD_REQUEST
-      response.getBody.getMessage shouldBe "not a valid candidate: groovee"
-    }
   }
 
   sealed trait ControllerUnderTest extends ReleaseController {
