@@ -1,9 +1,9 @@
 package net.gvmtool.release.defaults
 
-import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateUpdateRepo}
+import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
 import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response.SuccessResponse
-import net.gvmtool.release.version.{Version, VersionRepo}
+import net.gvmtool.release.version.{Version, VersionNotFoundException, VersionRepo}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs._
 import org.mockito.Matchers._
@@ -86,17 +86,18 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
     }
 
     "handle version not found exceptions with error response" in new ControllerUnderTest {
-      val message = "version not found"
-      val response = handle(VersionNotFoundException(message))
+      val candidate = "groovy"
+      val version = "9.9.9"
+      val response = handle(VersionNotFoundException(candidate, version))
       response.getStatusCode shouldBe HttpStatus.BAD_REQUEST
-      response.getBody.getMessage shouldBe message
+      response.getBody.getMessage shouldBe "invalid candidate version: groovy 9.9.9"
     }
 
     "handle candidate not found exceptions with error response" in new ControllerUnderTest {
-      val message = "candidate not found"
-      val response = handle(CandidateNotFoundException(message))
+      val candidate = "groovee"
+      val response = handle(CandidateNotFoundException(candidate))
       response.getStatusCode shouldBe HttpStatus.BAD_REQUEST
-      response.getBody.getMessage shouldBe message
+      response.getBody.getMessage shouldBe "not a valid candidate: groovee"
     }
   }
 

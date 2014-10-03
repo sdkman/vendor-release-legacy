@@ -36,5 +36,5 @@ object Candidate {
 class CandidateNotFoundException(message: String) extends RuntimeException(message: String)
 
 object CandidateNotFoundException {
-  def apply(m: String) = new CandidateNotFoundException(m)
+  def apply(candidate: String) = new CandidateNotFoundException(s"not a valid candidate: $candidate")
 }

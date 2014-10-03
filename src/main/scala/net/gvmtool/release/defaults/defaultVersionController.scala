@@ -18,14 +18,13 @@ trait DefaultVersionController {
 
   @RequestMapping(value = Array("/default"), method = Array(PUT))
   def default(@RequestBody request: DefaultVersionRequest) = {
-    if(candidateGenRepo.findByCandidate(request.getCandidate) == null)
-      throw CandidateNotFoundException(s"not a valid candidate: ${request.getCandidate}")
-    if(versionRepo.findByCandidateAndVersion(request.getCandidate, request.getDefaultVersion) == null)
-      throw VersionNotFoundException(s"invalid candidate version: ${request.getCandidate} ${request.getDefaultVersion}")
-    status.Accepted(candidateUpdateRepo.updateDefault(
-      Candidate(
-        request.getCandidate,
-        request.getDefaultVersion)))
+    val candidate = request.getCandidate
+    val version = request.getDefaultVersion
+    Option(candidateGenRepo.findByCandidate(candidate)).map { c =>
+      Option(versionRepo.findByCandidateAndVersion(c.candidate, version)).map { v =>
+        status.Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
+      }.getOrElse(throw VersionNotFoundException(candidate, version))
+    }.getOrElse(throw CandidateNotFoundException(candidate))
   }
 
   @ExceptionHandler

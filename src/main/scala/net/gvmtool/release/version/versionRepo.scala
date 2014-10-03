@@ -23,5 +23,5 @@ object Version {
 class VersionNotFoundException(message: String) extends RuntimeException(message: String)
 
 object VersionNotFoundException {
-  def apply(m: String) = new VersionNotFoundException(m)
+  def apply(candidate: String, version: String) = new VersionNotFoundException(s"invalid candidate version: ${candidate} ${version}")
 }
