@@ -12,10 +12,14 @@ trait DefaultVersionController {
 
   val candidateUpdateRepo: CandidateUpdateRepo
 
+  val candidateGenRepo: CandidateGeneralRepo
+
   val versionRepo: VersionRepo
 
   @RequestMapping(value = Array("/default"), method = Array(PUT))
   def default(@RequestBody request: DefaultVersionRequest) = {
+    if(candidateGenRepo.findByCandidate(request.getCandidate) == null)
+      throw CandidateNotFoundException(s"not a valid candidate: ${request.getCandidate}")
     if(versionRepo.findByCandidateAndVersion(request.getCandidate, request.getDefaultVersion) == null)
       throw VersionNotFoundException(s"invalid candidate version: ${request.getCandidate} ${request.getDefaultVersion}")
     status.Accepted(candidateUpdateRepo.updateDefault(
@@ -27,13 +31,22 @@ trait DefaultVersionController {
   @ExceptionHandler
   def handle(e: VersionNotFoundException) = status.BadRequest(e.getMessage)
 
+  @ExceptionHandler
+  def handle(e: CandidateNotFoundException) = status.BadRequest(e.getMessage)
+
 }
 
 @RestController
-class DefaultVersions @Autowired()(val versionRepo: VersionRepo, val candidateUpdateRepo: CandidateUpdateRepo) extends DefaultVersionController
+class DefaultVersions @Autowired()(val versionRepo: VersionRepo, val candidateGenRepo: CandidateGeneralRepo, val candidateUpdateRepo: CandidateUpdateRepo) extends DefaultVersionController
 
 class VersionNotFoundException(message: String) extends RuntimeException(message: String)
 
 object VersionNotFoundException {
   def apply(m: String) = new VersionNotFoundException(m)
+}
+
+class CandidateNotFoundException(message: String) extends RuntimeException(message: String)
+
+object CandidateNotFoundException {
+  def apply(m: String) = new CandidateNotFoundException(m)
 }

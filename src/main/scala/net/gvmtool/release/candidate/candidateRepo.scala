@@ -12,7 +12,9 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-trait CandidateGeneralRepo extends MongoRepository[Candidate, ObjectId]
+trait CandidateGeneralRepo extends MongoRepository[Candidate, ObjectId] {
+  def findByCandidate(candidate: String): Candidate
+}
 
 @Repository
 class CandidateUpdateRepo @Autowired()(val mongoTemplate: MongoTemplate)  {

@@ -31,7 +31,6 @@ Feature: Default Candidate Version
     Then the status received is "BAD_REQUEST"
     And the message "invalid candidate version: groovy 2.3.6" is received
 
-  @pending
   Scenario: Attempt to mark a non-existent Candidate Default
     Given Candidate "groovee" does not exist
     When a JSON PUT on the "/default" endpoint:
@@ -42,4 +41,4 @@ Feature: Default Candidate Version
         |}
     """
     Then the status received is "BAD_REQUEST"
-    And the message "not a valid candidate: groovy" is received
+    And the message "not a valid candidate: groovee" is received
