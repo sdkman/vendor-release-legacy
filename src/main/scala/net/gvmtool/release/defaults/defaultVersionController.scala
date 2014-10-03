@@ -3,7 +3,7 @@ package net.gvmtool.release.defaults
 import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
 import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.version.{VersionNotFoundException, VersionRepo}
-import net.gvmtool.status
+import net.gvmtool.status.{Accepted, BadRequest}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation._
@@ -22,16 +22,16 @@ trait DefaultVersionController {
     val version = request.getDefaultVersion
     Option(candidateGenRepo.findByCandidate(candidate)).map { c =>
       Option(versionRepo.findByCandidateAndVersion(c.candidate, version)).map { v =>
-        status.Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
+        Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
       }.getOrElse(throw VersionNotFoundException(candidate, version))
     }.getOrElse(throw CandidateNotFoundException(candidate))
   }
 
   @ExceptionHandler
-  def handle(e: VersionNotFoundException) = status.BadRequest(e.getMessage)
+  def handle(e: VersionNotFoundException) = BadRequest(e.getMessage)
 
   @ExceptionHandler
-  def handle(e: CandidateNotFoundException) = status.BadRequest(e.getMessage)
+  def handle(e: CandidateNotFoundException) = BadRequest(e.getMessage)
 
 }
 
