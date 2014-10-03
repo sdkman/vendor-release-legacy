@@ -32,3 +32,9 @@ case class Candidate(id: ObjectId, candidate: String, default: String)
 object Candidate {
   def apply(candidate: String, default: String) = new Candidate(null, candidate, default)
 }
+
+class CandidateNotFoundException(message: String) extends RuntimeException(message: String)
+
+object CandidateNotFoundException {
+  def apply(m: String) = new CandidateNotFoundException(m)
+}

@@ -19,3 +19,9 @@ case class Version(id: ObjectId, candidate: String, version: String, url: String
 object Version {
   def apply(r: ReleaseRequest): Version = Version(null, r.getCandidate, r.getVersion, r.getUrl)
 }
+
+class VersionNotFoundException(message: String) extends RuntimeException(message: String)
+
+object VersionNotFoundException {
+  def apply(m: String) = new VersionNotFoundException(m)
+}
