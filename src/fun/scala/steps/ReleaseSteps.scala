@@ -97,4 +97,8 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
   Given( """^Candidate "(.*?)" does not exist$""") { (candidate: String) =>
     Mongo.candidateExists(candidateColl, candidate) shouldBe false
   }
+
+  Given("""^the appropriate candidate already exists$"""){ () =>
+    Mongo.saveCandidate(candidateColl, "groovy", "2.3.6")
+  }
 }

@@ -7,6 +7,7 @@ Feature: Security
 
   Scenario: The Release endpoints CAN be Accessed when Authorised
     Given the Client is Authorised and Authenticated
+    And the appropriate candidate already exists
     When the "/release" endpoint receives a POST with valid payload
     Then an "CREATED" status is returned
 
