@@ -3,8 +3,10 @@ package net.gvmtool.release.defaults
 import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
 import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.version.{VersionNotFoundException, VersionRepo}
+import net.gvmtool.status
 import net.gvmtool.status.{Accepted, BadRequest}
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DataAccessException
 import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation._
 
@@ -32,6 +34,9 @@ trait DefaultVersionController {
 
   @ExceptionHandler
   def handle(e: CandidateNotFoundException) = BadRequest(e.getMessage)
+
+  @ExceptionHandler
+  def handle(e: DataAccessException) = status.ServiceUnavailable(e.getMessage)
 
 }
 
