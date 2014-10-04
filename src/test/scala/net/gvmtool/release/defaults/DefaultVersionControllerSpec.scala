@@ -108,7 +108,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
     }
   }
 
-  trait ControllerUnderTest extends DefaultVersionController {
+  sealed trait ControllerUnderTest extends DefaultVersionController {
     val candidateUpdateRepo = mockCandidateUpdateRepo
     val versionRepo = mockVersionRepo
     val candidateGenRepo = mockCandidateGenRepo

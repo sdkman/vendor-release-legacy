@@ -51,9 +51,9 @@ Feature: Default Candidate Version
         |}
     """
     Then the status received is "BAD_REQUEST"
-    And the error message received includes "Field error in object 'defaultVersionRequest'"
     And the error message received includes "on field 'candidate'"
     And the error message received includes "rejected value [null]"
+    And the error message received includes "Candidate name can not be null"
 
   Scenario: Attempt to submit malformed JSON with no default version
     When a JSON PUT on the "/default" endpoint:
@@ -63,6 +63,6 @@ Feature: Default Candidate Version
         |}
     """
     Then the status received is "BAD_REQUEST"
-    And the error message received includes "Field error in object 'defaultVersionRequest'"
     And the error message received includes "on field 'defaultVersion'"
     And the error message received includes "rejected value [null]"
+    And the error message received includes "Default Version can not be null"

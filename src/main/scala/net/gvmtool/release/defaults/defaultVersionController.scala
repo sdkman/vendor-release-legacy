@@ -21,15 +21,16 @@ trait DefaultVersionController {
   val versionRepo: VersionRepo
 
   @RequestMapping(value = Array("/default"), method = Array(PUT))
-  def default(@Valid @RequestBody request: DefaultVersionRequest)(implicit binding: BindingResult) = Validate {
-    val candidate = request.getCandidate
-    val version = request.getDefaultVersion
-    Option(candidateGenRepo.findByCandidate(candidate)).map { c =>
-      Option(versionRepo.findByCandidateAndVersion(c.candidate, version)).map { v =>
-        Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
-      }.getOrElse(throw VersionNotFoundException(candidate, version))
-    }.getOrElse(throw CandidateNotFoundException(candidate))
-  }
+  def default(@Valid @RequestBody request: DefaultVersionRequest)(implicit binding: BindingResult) =
+    Validate {
+      val candidate = request.getCandidate
+      val version = request.getDefaultVersion
+      Option(candidateGenRepo.findByCandidate(candidate)).map { c =>
+        Option(versionRepo.findByCandidateAndVersion(c.candidate, version)).map { v =>
+          Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
+        }.getOrElse(throw VersionNotFoundException(candidate, version))
+      }.getOrElse(throw CandidateNotFoundException(candidate))
+    }
 }
 
 @RestController
