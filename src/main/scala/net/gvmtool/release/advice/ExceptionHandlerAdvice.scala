@@ -1,5 +1,7 @@
 package net.gvmtool.release.advice
 
+import javax.validation.ValidationException
+
 import net.gvmtool.release.candidate.CandidateNotFoundException
 import net.gvmtool.release.version.VersionNotFoundException
 import net.gvmtool.status._
@@ -18,4 +20,6 @@ class ExceptionHandlerAdvice {
   @ExceptionHandler
   def handle(e: DataAccessException) = ServiceUnavailable(e.getMessage)
 
+  @ExceptionHandler
+  def handle(e: ValidationException) = BadRequest(e.getMessage)
 }

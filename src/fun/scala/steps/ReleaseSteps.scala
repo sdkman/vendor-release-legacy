@@ -84,6 +84,14 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
     }
   }
 
+  Then( """^the error message received includes "(.*?)"$""") { (message: String) =>
+    try {
+      extractMessage(request.asString) should include(message)
+    } catch {
+      case e: HttpException => extractMessage(e.body) should include(message)
+    }
+  }
+
   def extractMessage(str: String) = mapper.readValue[Map[String, String]](str).getOrElse("message", "invalid")
 
   Then( """^the Default "(.*?)" Version has changed to "(.*?)"$""") { (candidate: String, version: String) =>
@@ -98,7 +106,7 @@ class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
     Mongo.candidateExists(candidateColl, candidate) shouldBe false
   }
 
-  Given("""^the appropriate candidate already exists$"""){ () =>
+  Given( """^the appropriate candidate already exists$""") { () =>
     Mongo.saveCandidate(candidateColl, "groovy", "2.3.6")
   }
 }

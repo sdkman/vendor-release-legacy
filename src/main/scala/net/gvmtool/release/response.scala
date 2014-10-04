@@ -1,7 +1,6 @@
 package net.gvmtool
 
-import net.gvmtool.release.response.{SuccessResponse, ErrorResponse}
-import org.springframework.http.{ResponseEntity, HttpStatus}
+import net.gvmtool.release.response.{ErrorResponse, SuccessResponse}
 
 package object response {
 

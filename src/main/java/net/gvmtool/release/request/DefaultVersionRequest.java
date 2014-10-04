@@ -2,13 +2,14 @@ package net.gvmtool.release.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.NotNull;
 
 public class DefaultVersionRequest {
-    @NotBlank(message = "Candidate name must not be blank.")
+    @NotNull(message = "Candidate name can not be null.")
     private String candidate;
 
-    @NotBlank(message = "Version must be provided.")
+    @NotNull(message = "Default Version can not be null.")
     private String defaultVersion;
 
     public DefaultVersionRequest() {

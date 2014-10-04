@@ -1,5 +1,7 @@
 package net.gvmtool.release.defaults
 
+import javax.validation.ValidationException
+
 import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
 import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response.SuccessResponse
@@ -12,12 +14,16 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
 import org.springframework.http.{HttpStatus, ResponseEntity}
+import org.springframework.validation.{ObjectError, BindingResult}
+import scala.collection.JavaConversions._
 
 class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val mockCandidateUpdateRepo = mock[CandidateUpdateRepo]
   val mockCandidateGenRepo = mock[CandidateGeneralRepo]
   val mockVersionRepo = mock[VersionRepo]
+
+  implicit val binding = mock[BindingResult]
 
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
@@ -83,6 +89,22 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       //then
       e.getMessage shouldBe "not a valid candidate: groovee"
+    }
+
+    "fail validation if field is null" in new ControllerUnderTest {
+      val version = "2.3.7"
+      val request = new DefaultVersionRequest(null, version)
+
+      val error = new ObjectError("defaultVersionRequest", "can not be null")
+      when(binding.hasErrors).thenReturn(true)
+      when(binding.getAllErrors).thenReturn(List[ObjectError](error))
+
+      val e = intercept[ValidationException] {
+        default(request)
+      }
+
+      e.getMessage should include("Error in object 'defaultVersionRequest'")
+      e.getMessage should include("default message [can not be null]")
     }
   }
 

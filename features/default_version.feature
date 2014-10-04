@@ -42,3 +42,27 @@ Feature: Default Candidate Version
     """
     Then the status received is "BAD_REQUEST"
     And the message "not a valid candidate: groovee" is received
+
+  Scenario: Attempt to submit malformed JSON with no candidate
+    When a JSON PUT on the "/default" endpoint:
+    """
+        |{
+        |   "default" : "2.3.6"
+        |}
+    """
+    Then the status received is "BAD_REQUEST"
+    And the error message received includes "Field error in object 'defaultVersionRequest'"
+    And the error message received includes "on field 'candidate'"
+    And the error message received includes "rejected value [null]"
+
+  Scenario: Attempt to submit malformed JSON with no default version
+    When a JSON PUT on the "/default" endpoint:
+    """
+        |{
+        |   "candidate" : "groovy"
+        |}
+    """
+    Then the status received is "BAD_REQUEST"
+    And the error message received includes "Field error in object 'defaultVersionRequest'"
+    And the error message received includes "on field 'defaultVersion'"
+    And the error message received includes "rejected value [null]"
