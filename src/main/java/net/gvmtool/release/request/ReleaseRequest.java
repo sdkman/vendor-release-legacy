@@ -3,9 +3,17 @@ package net.gvmtool.release.request;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.validation.constraints.NotNull;
+
 public class ReleaseRequest {
+
+    @NotNull(message = "Candidate can not be null.")
     private String candidate;
+
+    @NotNull(message = "Version can not be null.")
     private String version;
+
+    @NotNull(message = "URL can not be null.")
     private String url;
 
     public ReleaseRequest() {

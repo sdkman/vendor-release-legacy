@@ -1,7 +1,9 @@
 package net.gvmtool.release.releases
 
+import javax.validation.ValidationException
+
 import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException}
-import net.gvmtool.release.request.ReleaseRequest
+import net.gvmtool.release.request.{DefaultVersionRequest, ReleaseRequest}
 import net.gvmtool.release.response.SuccessResponse
 import net.gvmtool.release.version.{Version, VersionRepo}
 import org.bson.types.ObjectId
@@ -13,12 +15,17 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.{HttpStatus, ResponseEntity}
+import org.springframework.validation.{BindingResult, ObjectError}
+
+import scala.collection.JavaConversions._
 
 @RunWith(classOf[JUnitRunner])
 class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val mockVersionRepo = mock[VersionRepo]
   val mockCandidateRepo = mock[CandidateGeneralRepo]
+
+  implicit val binding = mock[BindingResult]
 
   "release controller" should {
     "create a new candidate version" in new ControllerUnderTest {
@@ -62,6 +69,24 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       e.getMessage shouldBe "not a valid candidate: groovee"
       verify(mockCandidateRepo).findByCandidate(candidate)
     }
+
+    "fail validation if field is null" in new ControllerUnderTest {
+      val version = "2.3.7"
+      val url = "url"
+      val request = new ReleaseRequest(null, version, url)
+
+      val error = new ObjectError("releaseRequest", "can not be null")
+      when(binding.hasErrors).thenReturn(true)
+      when(binding.getAllErrors).thenReturn(List[ObjectError](error))
+
+      val e = intercept[ValidationException] {
+        publish(request)
+      }
+
+      e.getMessage should include("Error in object 'releaseRequest'")
+      e.getMessage should include("default message [can not be null]")
+    }
+
   }
 
   sealed trait ControllerUnderTest extends ReleaseController {
