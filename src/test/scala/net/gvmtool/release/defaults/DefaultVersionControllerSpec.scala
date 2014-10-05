@@ -23,8 +23,10 @@ import net.gvmtool.release.response.SuccessResponse
 import net.gvmtool.release.version.{Version, VersionNotFoundException, VersionRepo}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs._
+import org.junit.runner.RunWith
 import org.mockito.Matchers._
 import org.mockito.Mockito._
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
@@ -32,6 +34,7 @@ import org.springframework.http.{HttpStatus, ResponseEntity}
 import org.springframework.validation.{ObjectError, BindingResult}
 import scala.collection.JavaConversions._
 
+@RunWith(classOf[JUnitRunner])
 class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val mockCandidateUpdateRepo = mock[CandidateUpdateRepo]
