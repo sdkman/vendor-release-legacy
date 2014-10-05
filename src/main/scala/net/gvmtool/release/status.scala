@@ -15,8 +15,7 @@
  */
 package net.gvmtool
 
-import net.gvmtool.release.candidate.Candidate
-import net.gvmtool.release.version.Version
+import net.gvmtool.release.{Version, Candidate}
 import net.gvmtool.response.{ErrorResponse, SuccessResponse}
 import org.springframework.http.HttpStatus._
 import org.springframework.http.ResponseEntity

@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.gvmtool.release.releases
+package net.gvmtool.release
 
 import javax.validation.Valid
 
-import net.gvmtool.release.candidate.{CandidateUpdateRepo, CandidatePersistence, CandidateGeneralRepo, CandidateNotFoundException}
 import net.gvmtool.release.request.ReleaseRequest
 import net.gvmtool.release.validate.Validate
-import net.gvmtool.release.version.{VersionPersistence, Version, VersionRepo}
 import net.gvmtool.status.Created
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult

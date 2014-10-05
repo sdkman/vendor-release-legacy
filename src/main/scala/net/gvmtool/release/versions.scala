@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.gvmtool.release.version
+package net.gvmtool.release
 
-import net.gvmtool.release.request.{DefaultVersionRequest, ReleaseRequest}
+import net.gvmtool.release.request.ReleaseRequest
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
@@ -28,7 +28,7 @@ trait VersionPersistence {
 
 @Repository
 trait VersionRepo extends MongoRepository[Version, ObjectId] {
-  def findByCandidateAndVersion(candidate: String, version: String): Version = ???
+  def findByCandidateAndVersion(candidate: String, version: String): Version
 }
 
 @Document(collection = "versions")
@@ -43,5 +43,5 @@ class VersionNotFoundException(message: String) extends RuntimeException(message
 
 object VersionNotFoundException {
   def apply(candidate: String, version: String) =
-    new VersionNotFoundException(s"invalid candidate version: ${candidate} ${version}")
+    new VersionNotFoundException(s"invalid candidate version: $candidate $version")
 }

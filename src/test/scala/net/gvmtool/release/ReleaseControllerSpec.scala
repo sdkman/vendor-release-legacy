@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.gvmtool.release.releases
+package net.gvmtool.release
 
 import javax.validation.ValidationException
 
-import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
 import net.gvmtool.release.request.ReleaseRequest
 import net.gvmtool.release.response.SuccessResponse
-import net.gvmtool.release.version.{Version, VersionRepo}
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs.samePropertyValuesAs
 import org.junit.runner.RunWith
