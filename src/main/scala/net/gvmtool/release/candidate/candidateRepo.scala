@@ -26,6 +26,11 @@ import org.springframework.data.mongodb.core.query.Update._
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
+trait CandidatePersistence {
+  val candidateRepo: CandidateGeneralRepo
+  val candidateUpdateRepo: CandidateUpdateRepo
+}
+
 @Repository
 trait CandidateGeneralRepo extends MongoRepository[Candidate, ObjectId] {
   def findByCandidate(candidate: String): Candidate

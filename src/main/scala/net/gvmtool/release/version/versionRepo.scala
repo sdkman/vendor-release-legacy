@@ -22,6 +22,10 @@ import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
+trait VersionPersistence {
+  val versionRepo: VersionRepo
+}
+
 @Repository
 trait VersionRepo extends MongoRepository[Version, ObjectId] {
   def findByCandidateAndVersion(candidate: String, version: String): Version = ???

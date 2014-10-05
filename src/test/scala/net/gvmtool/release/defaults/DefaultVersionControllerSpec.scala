@@ -30,8 +30,9 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
-import org.springframework.http.{HttpStatus, ResponseEntity}
-import org.springframework.validation.{ObjectError, BindingResult}
+import org.springframework.http.ResponseEntity
+import org.springframework.validation.{BindingResult, ObjectError}
+
 import scala.collection.JavaConversions._
 
 @RunWith(classOf[JUnitRunner])
@@ -57,7 +58,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
         id = new ObjectId("5426b99bba78e60054fe48ca"), candidate, version,
         url = "http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip")
 
-      when(candidateGenRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
+      when(candidateRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
       when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persisted)
       when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionFound)
 
@@ -79,7 +80,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       val version = "9.9.9"
       val request = new DefaultVersionRequest(candidate, version)
 
-      when(candidateGenRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
+      when(candidateRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
       when(versionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(null)
 
       //when
@@ -98,7 +99,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       val version = "2.3.7"
       val request = new DefaultVersionRequest(candidate, version)
 
-      when(candidateGenRepo.findByCandidate(candidate)).thenReturn(null)
+      when(candidateRepo.findByCandidate(candidate)).thenReturn(null)
 
       //when
       val e = intercept[CandidateNotFoundException] {
@@ -129,7 +130,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
   sealed trait ControllerUnderTest extends DefaultVersionController {
     val candidateUpdateRepo = mockCandidateUpdateRepo
     val versionRepo = mockVersionRepo
-    val candidateGenRepo = mockCandidateGenRepo
+    val candidateRepo = mockCandidateGenRepo
   }
 
 }

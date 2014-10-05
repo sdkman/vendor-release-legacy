@@ -17,8 +17,8 @@ package net.gvmtool.release.releases
 
 import javax.validation.ValidationException
 
-import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException}
-import net.gvmtool.release.request.{DefaultVersionRequest, ReleaseRequest}
+import net.gvmtool.release.candidate.{Candidate, CandidateGeneralRepo, CandidateNotFoundException, CandidateUpdateRepo}
+import net.gvmtool.release.request.ReleaseRequest
 import net.gvmtool.release.response.SuccessResponse
 import net.gvmtool.release.version.{Version, VersionRepo}
 import org.bson.types.ObjectId
@@ -107,6 +107,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
   sealed trait ControllerUnderTest extends ReleaseController {
     val versionRepo = mockVersionRepo
     val candidateRepo = mockCandidateRepo
+    val candidateUpdateRepo = mock[CandidateUpdateRepo]
   }
 
 }
