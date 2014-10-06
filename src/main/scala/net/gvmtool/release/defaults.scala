@@ -18,11 +18,9 @@ package net.gvmtool.release
 import javax.validation.Valid
 
 import net.gvmtool.release.request.DefaultVersionRequest
-import net.gvmtool.release.response.SuccessResponse
-import net.gvmtool.release.validate.{ValidVersion, ValidRequest}
+import net.gvmtool.release.validate.{ValidCandidate, ValidRequest, ValidVersion}
 import net.gvmtool.status.Accepted
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation._
@@ -31,13 +29,12 @@ trait DefaultVersionController extends CandidatePersistence with VersionPersiste
   @RequestMapping(value = Array("/default"), method = Array(PUT))
   def default()(implicit @Valid @RequestBody request: DefaultVersionRequest, binding: BindingResult) =
     ValidRequest {
-      val candidate = request.getCandidate
-      val version = request.getDefaultVersion
-      Option(candidateRepo.findByCandidate(candidate)).map { c =>
-        ValidVersion { v: Version =>
-          Accepted(candidateUpdateRepo.updateDefault(Candidate(v.candidate, v.version)))
+      ValidCandidate {
+        ValidVersion {
+          Accepted(candidateUpdateRepo.updateDefault(
+            Candidate(request.getCandidate, request.getDefaultVersion)))
         }
-      }.getOrElse(throw CandidateNotFoundException(candidate))
+      }
     }
 }
 

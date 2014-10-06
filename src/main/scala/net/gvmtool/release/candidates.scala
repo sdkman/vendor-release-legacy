@@ -27,7 +27,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 trait CandidatePersistence {
-  val candidateRepo: CandidateGeneralRepo
+  implicit val candidateRepo: CandidateGeneralRepo
   val candidateUpdateRepo: CandidateUpdateRepo
 }
 
