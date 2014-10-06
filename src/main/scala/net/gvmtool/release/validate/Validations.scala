@@ -17,6 +17,8 @@ package net.gvmtool.release.validate
 
 import javax.validation.ValidationException
 
+import net.gvmtool.release.{VersionNotFoundException, VersionRepo, Version}
+import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response.SuccessResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -25,4 +27,14 @@ object ValidRequest {
   def apply(fun: => ResponseEntity[SuccessResponse])(implicit binding: BindingResult) =
     if (binding.hasErrors) throw new ValidationException(binding.getAllErrors.toString)
     else fun
+}
+
+object ValidVersion {
+  def apply(f: Version => ResponseEntity[SuccessResponse])(implicit r: DefaultVersionRequest, repo: VersionRepo) = {
+    val c = r.getCandidate
+    val v = r.getDefaultVersion
+    Option(repo.findByCandidateAndVersion(c, v))
+      .map(f)
+      .getOrElse(throw VersionNotFoundException(c, v))
+  }
 }

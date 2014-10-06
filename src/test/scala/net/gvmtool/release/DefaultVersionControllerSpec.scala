@@ -47,7 +47,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       //given
       val candidate = "groovy"
       val version = "2.3.6"
-      val request = new DefaultVersionRequest(candidate, version)
+      implicit val request = new DefaultVersionRequest(candidate, version)
 
       val candidateObj = Candidate(candidate, version)
       val persisted = candidateObj.copy(id = new ObjectId("5423333bba78831a730c18e2"))
@@ -61,7 +61,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionFound)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = default(request)
+      val response: ResponseEntity[SuccessResponse] = default()
 
       //then
       response.getStatusCode shouldBe ACCEPTED
@@ -76,14 +76,14 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       //given
       val candidate = "groovy"
       val version = "9.9.9"
-      val request = new DefaultVersionRequest(candidate, version)
+      implicit val request = new DefaultVersionRequest(candidate, version)
 
       when(candidateRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
       when(versionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(null)
 
       //when
       val e = intercept[VersionNotFoundException] {
-        default(request)
+        default()
       }
 
       //then
@@ -95,13 +95,13 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       //given
       val candidate = "groovee"
       val version = "2.3.7"
-      val request = new DefaultVersionRequest(candidate, version)
+      implicit val request = new DefaultVersionRequest(candidate, version)
 
       when(candidateRepo.findByCandidate(candidate)).thenReturn(null)
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        default(request)
+        default()
       }
 
       //then
@@ -110,14 +110,14 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
     "fail validation if field is null" in new ControllerUnderTest {
       val version = "2.3.7"
-      val request = new DefaultVersionRequest(null, version)
+      implicit val request = new DefaultVersionRequest(null, version)
 
       val error = new ObjectError("defaultVersionRequest", "can not be null")
       when(binding.hasErrors).thenReturn(true)
       when(binding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        default(request)
+        default()
       }
 
       e.getMessage should include("Error in object 'defaultVersionRequest'")
