@@ -16,7 +16,7 @@
 package support
 
 import scalaj.http.Http.Request
-import scalaj.http.{Http => HttpClient}
+import scalaj.http.{Http => HttpClient, HttpOptions}
 
 object Http {
 
@@ -28,6 +28,8 @@ object Http {
       s"password=$password&username=$username&grant_type=password&scope=read%20write&client_secret=client_secret&client_id=client_id")
       .auth("client_id", "client_secret")
       .header("Content-Type", "application/x-www-form-urlencoded")
+      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.readTimeout(5000))
   }
 
   def post(endpoint: String, token: String): Request = {
@@ -35,8 +37,9 @@ object Http {
       .headers(
         "Authorization" -> token,
         "Accept" -> "application/json",
-        "Content-Type" -> "application/json"
-      )
+        "Content-Type" -> "application/json")
+      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.readTimeout(5000))
   }
 
   def postJson(endpoint: String, json: String, token: String): Request = {
