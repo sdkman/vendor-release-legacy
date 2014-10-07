@@ -31,8 +31,9 @@ trait DefaultVersionController extends CandidatePersistence with VersionPersiste
     ValidRequest {
       ValidCandidate {
         ValidVersion {
-          Accepted(candidateUpdateRepo.updateDefault(
-            Candidate(request.getCandidate, request.getDefaultVersion)))
+          val candidate = request.getCandidate
+          val version = request.getDefaultVersion
+          Accepted(update(Candidate(candidate, version)))
         }
       }
     }
