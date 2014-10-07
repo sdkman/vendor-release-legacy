@@ -79,6 +79,6 @@ Feature: Default Candidate Version
         |}
     """
     Then the status received is "BAD_REQUEST"
-    And the error message received includes "on field 'defaultVersion'"
+    And the error message received includes "on field 'version'"
     And the error message received includes "rejected value [null]"
     And the error message received includes "Default Version can not be null"

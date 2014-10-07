@@ -20,12 +20,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public class DefaultVersionRequest {
+public class DefaultVersionRequest implements SimpleRequest {
     @NotNull(message = "Candidate name can not be null.")
     private String candidate;
 
     @NotNull(message = "Default Version can not be null.")
-    private String defaultVersion;
+    private String version;
 
     public DefaultVersionRequest() {
         //needs default constructor
@@ -33,24 +33,24 @@ public class DefaultVersionRequest {
 
     @JsonCreator
     public DefaultVersionRequest(@JsonProperty("candidate") String candidate,
-                                 @JsonProperty("default") String defaultVersion) {
+                                 @JsonProperty("default") String version) {
         this.candidate = candidate;
-        this.defaultVersion = defaultVersion;
+        this.version = version;
     }
 
     public String getCandidate() {
         return candidate;
     }
 
-    public String getDefaultVersion() {
-        return defaultVersion;
+    public String getVersion() {
+        return version;
     }
 
     @Override
     public String toString() {
         return "CandidateRequest{" +
                 "candidate='" + candidate + '\'' +
-                ", defaultVersion='" + defaultVersion + '\'' +
+                ", version='" + version + '\'' +
                 '}';
     }
 }

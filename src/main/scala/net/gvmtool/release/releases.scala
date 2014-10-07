@@ -29,12 +29,12 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence {
   @RequestMapping(value = Array("/release"), method = Array(POST))
   def publish(implicit @Valid @RequestBody request: ReleaseRequest, binding: BindingResult) =
     ValidRequest {
-      val candidate = request.getCandidate
-      val version = request.getVersion
-      val url = request.getUrl
-      ValidCandidate(candidate,
+      ValidCandidate {
+        val candidate = request.getCandidate
+        val version = request.getVersion
+        val url = request.getUrl
         Created(save(Version(candidate, version, url)))
-      )
+      }
     }
 }
 

@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 
-public class ReleaseRequest {
+public class ReleaseRequest implements SimpleRequest {
 
     @NotNull(message = "Candidate can not be null.")
     private String candidate;

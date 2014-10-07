@@ -18,6 +18,7 @@ package net.gvmtool.release.validate
 import javax.validation.ValidationException
 
 import net.gvmtool.release._
+import net.gvmtool.release.request.SimpleRequest
 import net.gvmtool.release.response.SuccessResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -29,17 +30,17 @@ object ValidRequest {
 }
 
 object ValidCandidateVersion {
-  def apply(candidate: String, version: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: VersionRepo) = {
-    Option(repo.findByCandidateAndVersion(candidate, version))
+  def apply(fun: => ResponseEntity[SuccessResponse])(implicit repo: VersionRepo, request: SimpleRequest) = {
+    Option(repo.findByCandidateAndVersion(request.getCandidate, request.getVersion))
       .map(v => fun)
-      .getOrElse(throw VersionNotFoundException(candidate, version))
+      .getOrElse(throw VersionNotFoundException(request.getCandidate, request.getVersion))
   }
 }
 
 object ValidCandidate {
-  def apply(candidate: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: CandidateRepo) = {
-    Option(repo.findByCandidate(candidate))
+  def apply(fun: => ResponseEntity[SuccessResponse])(implicit repo: CandidateRepo, request: SimpleRequest) = {
+    Option(repo.findByCandidate(request.getCandidate))
       .map(c => fun)
-      .getOrElse(throw CandidateNotFoundException(candidate))
+      .getOrElse(throw CandidateNotFoundException(request.getCandidate))
   }
 }
