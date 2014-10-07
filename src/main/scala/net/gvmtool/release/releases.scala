@@ -27,11 +27,14 @@ import org.springframework.web.bind.annotation._
 
 trait ReleaseController extends CandidatePersistence with VersionPersistence {
   @RequestMapping(value = Array("/release"), method = Array(POST))
-  def publish(@Valid @RequestBody request: ReleaseRequest)(implicit binding: BindingResult) =
+  def publish(implicit @Valid @RequestBody request: ReleaseRequest, binding: BindingResult) =
     ValidRequest {
-      ValidCandidate {
-        Created(versionRepo.save(Version(request)))
-      }
+      val candidate = request.getCandidate
+      val version = request.getVersion
+      val url = request.getUrl
+      ValidCandidate(candidate,
+        Created(save(Version(candidate, version, url)))
+      )
     }
 }
 

@@ -46,8 +46,8 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val candidate = "groovy"
       val version = "2.3.6"
       val url = "http://somehost/groovy-binary-2.3.6.zip"
-      val request = new ReleaseRequest(candidate, version, url)
       val versionObj = Version(null, candidate, version, url)
+      implicit val request = new ReleaseRequest(candidate, version, url)
 
       val candidateObj = Candidate(new ObjectId("5426b99bba78e60054fe48ca"), candidate, version)
       when(mockCandidateRepo.findByCandidate(candidate)).thenReturn(candidateObj)
@@ -56,7 +56,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(mockVersionRepo.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = publish(request)
+      val response: ResponseEntity[SuccessResponse] = publish
 
       //then
       response.getStatusCode shouldBe HttpStatus.CREATED
@@ -69,13 +69,14 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val candidate = "groovee"
       val version = "2.3.7"
       val url = "http://somehost/groovy-binary-2.3.6.zip"
-      val request = new ReleaseRequest(candidate, version, url)
+
+      implicit val request = new ReleaseRequest(candidate, version, url)
 
       when(mockCandidateRepo.findByCandidate(candidate)).thenReturn(null)
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        publish(request)
+        publish
       }
 
       //then
@@ -86,14 +87,15 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
     "fail validation if field is null" in new ControllerUnderTest {
       val version = "2.3.7"
       val url = "url"
-      val request = new ReleaseRequest(null, version, url)
+
+      implicit val request = new ReleaseRequest(null, version, url)
 
       val error = new ObjectError("releaseRequest", "can not be null")
       when(binding.hasErrors).thenReturn(true)
       when(binding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        publish(request)
+        publish
       }
 
       e.getMessage should include("Error in object 'releaseRequest'")

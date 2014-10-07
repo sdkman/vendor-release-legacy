@@ -18,7 +18,6 @@ package net.gvmtool.release.validate
 import javax.validation.ValidationException
 
 import net.gvmtool.release._
-import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response.SuccessResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
@@ -29,18 +28,18 @@ object ValidRequest {
     else fun
 }
 
-object ValidVersion {
-  def apply(fun: => ResponseEntity[SuccessResponse])(implicit r: DefaultVersionRequest, repo: VersionRepo) = {
-    Option(repo.findByCandidateAndVersion(r.getCandidate, r.getDefaultVersion))
+object ValidCandidateVersion {
+  def apply(candidate: String, version: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: VersionRepo) = {
+    Option(repo.findByCandidateAndVersion(candidate, version))
       .map(v => fun)
-      .getOrElse(throw VersionNotFoundException(r.getCandidate, r.getDefaultVersion))
+      .getOrElse(throw VersionNotFoundException(candidate, version))
   }
 }
 
 object ValidCandidate {
-  def apply(fun: => ResponseEntity[SuccessResponse])(implicit r: DefaultVersionRequest, repo: CandidateGeneralRepo) = {
-    Option(repo.findByCandidate(r.getCandidate))
+  def apply(candidate: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: CandidateGeneralRepo) = {
+    Option(repo.findByCandidate(candidate))
       .map(c => fun)
-      .getOrElse(throw CandidateNotFoundException(r.getCandidate))
+      .getOrElse(throw CandidateNotFoundException(candidate))
   }
 }

@@ -15,7 +15,6 @@
  */
 package net.gvmtool.release
 
-import net.gvmtool.release.request.ReleaseRequest
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
@@ -24,6 +23,7 @@ import org.springframework.stereotype.Repository
 
 trait VersionPersistence {
   implicit val versionRepo: VersionRepo
+  def save(v: Version) = versionRepo.save(v)
 }
 
 @Repository
@@ -36,7 +36,7 @@ trait VersionRepo extends MongoRepository[Version, ObjectId] {
 case class Version(id: ObjectId, candidate: String, version: String, url: String)
 
 object Version {
-  def apply(r: ReleaseRequest): Version = Version(null, r.getCandidate, r.getVersion, r.getUrl)
+  def apply(candidate: String, version: String, url: String): Version = Version(null, candidate, version, url)
 }
 
 class VersionNotFoundException(message: String) extends RuntimeException(message: String)
