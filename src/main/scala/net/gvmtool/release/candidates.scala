@@ -27,13 +27,13 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 trait CandidatePersistence {
-  implicit val candidateRepo: CandidateGeneralRepo
+  implicit val candidateRepo: CandidateRepo
   val candidateUpdateRepo: CandidateUpdateRepo
   def update(c: Candidate) = candidateUpdateRepo.updateDefault(c)
 }
 
 @Repository
-trait CandidateGeneralRepo extends MongoRepository[Candidate, ObjectId] {
+trait CandidateRepo extends MongoRepository[Candidate, ObjectId] {
   def findByCandidate(candidate: String): Candidate
 }
 

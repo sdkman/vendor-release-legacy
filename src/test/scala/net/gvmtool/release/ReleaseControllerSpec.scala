@@ -36,7 +36,7 @@ import scala.collection.JavaConversions._
 class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val mockVersionRepo = mock[VersionRepo]
-  val mockCandidateRepo = mock[CandidateGeneralRepo]
+  val mockCandidateRepo = mock[CandidateRepo]
 
   implicit val binding = mock[BindingResult]
 

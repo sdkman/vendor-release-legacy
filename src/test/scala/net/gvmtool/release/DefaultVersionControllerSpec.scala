@@ -37,7 +37,7 @@ import scala.collection.JavaConversions._
 class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
 
   val mockCandidateUpdateRepo = mock[CandidateUpdateRepo]
-  val mockCandidateGenRepo = mock[CandidateGeneralRepo]
+  val mockCandidateRepo = mock[CandidateRepo]
   val mockVersionRepo = mock[VersionRepo]
 
   implicit val binding = mock[BindingResult]
@@ -128,7 +128,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
   sealed trait ControllerUnderTest extends DefaultVersionController {
     val candidateUpdateRepo = mockCandidateUpdateRepo
     val versionRepo = mockVersionRepo
-    val candidateRepo = mockCandidateGenRepo
+    val candidateRepo = mockCandidateRepo
   }
 
 }

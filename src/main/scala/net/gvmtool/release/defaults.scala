@@ -40,5 +40,5 @@ trait DefaultVersionController extends CandidatePersistence with VersionPersiste
 
 @RestController
 class DefaultVersions @Autowired()(val versionRepo: VersionRepo,
-                                   val candidateRepo: CandidateGeneralRepo,
+                                   val candidateRepo: CandidateRepo,
                                    val candidateUpdateRepo: CandidateUpdateRepo) extends DefaultVersionController

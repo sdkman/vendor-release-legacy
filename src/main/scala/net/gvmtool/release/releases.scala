@@ -40,5 +40,5 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence {
 
 @RestController
 class Releases @Autowired()(val versionRepo: VersionRepo,
-                            val candidateRepo: CandidateGeneralRepo,
+                            val candidateRepo: CandidateRepo,
                             val candidateUpdateRepo: CandidateUpdateRepo) extends ReleaseController

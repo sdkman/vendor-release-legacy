@@ -37,7 +37,7 @@ object ValidCandidateVersion {
 }
 
 object ValidCandidate {
-  def apply(candidate: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: CandidateGeneralRepo) = {
+  def apply(candidate: String, fun: => ResponseEntity[SuccessResponse])(implicit repo: CandidateRepo) = {
     Option(repo.findByCandidate(candidate))
       .map(c => fun)
       .getOrElse(throw CandidateNotFoundException(candidate))
