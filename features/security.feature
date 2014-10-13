@@ -18,13 +18,27 @@ Feature: Security
 
   Scenario: The Release endpoints can NOT be Accessed when not Authorised
     Given the Client is not Authorised and Authenticated
-    When the "/release" endpoint receives a POST with valid payload
+    When the "/release" endpoint receives a POST with valid payload:
+    """
+        |{
+        |  "candidate" : "groovy",
+        |  "version" : "2.3.6",
+        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+        |}
+    """
     Then an "UNAUTHORIZED" status is returned
 
   Scenario: The Release endpoints CAN be Accessed when Authorised
     Given the Client is Authorised and Authenticated
     And the appropriate candidate already exists
-    When the "/release" endpoint receives a POST with valid payload
+    When the "/release" endpoint receives a POST with valid payload:
+    """
+        |{
+        |  "candidate" : "groovy",
+        |  "version" : "2.3.6",
+        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+        |}
+    """
     Then an "CREATED" status is returned
 
   Scenario: The Admin Mappings endpoint can NOT be Accessed without Authorisation

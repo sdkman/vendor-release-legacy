@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * 	http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,17 +47,8 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
     request = Http.post(endpoint, token)
   }
 
-  When( """^the "(.*?)" endpoint receives a POST with valid payload$""") { (endpoint: String) =>
-    val payload =
-      """
-        |{
-        |  "candidate" : "groovy",
-        |  "version" : "2.3.6",
-        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
-        |}
-      """.stripMargin
-
-    request = Http.postJson(endpoint, payload, token)
+  When( """^the "(.*?)" endpoint receives a POST with valid payload:$""") { (endpoint: String, payload: String) =>
+    request = Http.postJson(endpoint, payload.stripMargin, token)
   }
 
   And( """^an "(.*)" status is returned$""") { (status: String) =>
