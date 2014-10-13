@@ -33,11 +33,13 @@ class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   val resourceId = "rest-service"
   val releaseRegex = "/release.*"
+  val defaultRegex = "/default.*"
   val adminRegex = "/admin/((?!health|info).)*"
 
   override def configure(httpSecurity: HttpSecurity) =
     httpSecurity.authorizeRequests()
       .regexMatchers(HttpMethod.POST, releaseRegex).authenticated()
+      .regexMatchers(HttpMethod.PUT, defaultRegex).authenticated()
       .regexMatchers(HttpMethod.GET, adminRegex).authenticated()
 
   override def configure(resources: ResourceServerSecurityConfigurer) = resources.resourceId(resourceId)

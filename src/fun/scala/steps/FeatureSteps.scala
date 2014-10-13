@@ -15,32 +15,14 @@
  */
 package steps
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
-import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import com.mongodb.casbah.MongoCollection
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
+import steps.World._
 import support.{Http, Mongo}
 
-import scalaj.http.Http.Request
 import scalaj.http.HttpException
 
-class ReleaseSteps extends ScalaDsl with EN with ShouldMatchers {
-
-  val mapper = new ObjectMapper() with ScalaObjectMapper
-  mapper.registerModule(DefaultScalaModule)
-
-  val statusCodes = Map("OK" -> 200, "CREATED" -> 201, "ACCEPTED" -> 202, "BAD_REQUEST" -> 400, "UNAUTHORIZED" -> 401)
-
-  val mongoDb = Mongo.primeDatabase("gvm")
-  var candidateColl: MongoCollection = null
-  var versionColl: MongoCollection = null
-
-  var token = "invalid"
-
-  var request: Request = null
-  var response = Map[String, String]()
+class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
 
   Before() { s =>
     candidateColl = Mongo.createCollection(mongoDb, "candidates")
