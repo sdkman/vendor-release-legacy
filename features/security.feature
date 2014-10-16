@@ -20,11 +20,11 @@ Feature: Security
     Given the Client is not Authorised and Authenticated
     When a JSON POST on the "/release" endpoint:
     """
-        |{
-        |  "candidate" : "groovy",
-        |  "version" : "2.3.6",
-        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
-        |}
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
     """
     Then the status received is "UNAUTHORIZED"
 
@@ -33,11 +33,11 @@ Feature: Security
     And the appropriate candidate already exists
     When a JSON POST on the "/release" endpoint:
     """
-        |{
-        |  "candidate" : "groovy",
-        |  "version" : "2.3.6",
-        |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
-        |}
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
     """
     Then the status received is "CREATED"
 
@@ -48,10 +48,10 @@ Feature: Security
     And the existing Default "groovy" Version is "2.3.5"
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovy",
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "candidate" : "groovy",
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "UNAUTHORIZED"
 
@@ -62,10 +62,10 @@ Feature: Security
     And the existing Default "groovy" Version is "2.3.5"
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovy",
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "candidate" : "groovy",
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "ACCEPTED"
 

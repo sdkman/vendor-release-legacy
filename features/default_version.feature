@@ -25,10 +25,10 @@ Feature: Default Candidate Version
     And the existing Default "groovy" Version is "2.3.5"
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovy",
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "candidate" : "groovy",
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "ACCEPTED"
     And the message "default groovy version: 2.3.6" is received
@@ -39,10 +39,10 @@ Feature: Default Candidate Version
     And Candidate "groovy" Version "2.3.6" does not exists
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovy",
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "candidate" : "groovy",
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "BAD_REQUEST"
     And the message "invalid candidate version: groovy 2.3.6" is received
@@ -51,10 +51,10 @@ Feature: Default Candidate Version
     Given Candidate "groovee" does not exist
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovee",
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "candidate" : "groovee",
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "BAD_REQUEST"
     And the message "not a valid candidate: groovee" is received
@@ -62,9 +62,9 @@ Feature: Default Candidate Version
   Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "default" : "2.3.6"
-        |}
+          |{
+          |   "default" : "2.3.6"
+          |}
     """
     Then the status received is "BAD_REQUEST"
     And the error message received includes "on field 'candidate'"
@@ -74,9 +74,9 @@ Feature: Default Candidate Version
   Scenario: Attempt to submit malformed JSON with no default version
     When a JSON PUT on the "/default" endpoint:
     """
-        |{
-        |   "candidate" : "groovy"
-        |}
+          |{
+          |   "candidate" : "groovy"
+          |}
     """
     Then the status received is "BAD_REQUEST"
     And the error message received includes "on field 'version'"
