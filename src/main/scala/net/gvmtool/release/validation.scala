@@ -37,6 +37,13 @@ package object validation {
       }(c => c.candidate)
   }
 
+  trait VersionValidation {
+    def validVersion(c: String, v: String)(implicit repo: VersionRepo): String =
+      Option(repo.findByCandidateAndVersion(c, v)).fold {
+        throw VersionNotFoundException(c, v)
+      }(v => v.version)
+  }
+
   object ValidCandidateVersion {
     def apply(fun: => ResponseEntity[SuccessResponse])(implicit repo: VersionRepo, request: SimpleRequest) = {
       Option(repo.findByCandidateAndVersion(request.getCandidate, request.getVersion))
