@@ -30,6 +30,13 @@ package object validation {
       else fun
   }
 
+  trait CandidateValidation {
+    def validCandidate(c: String)(implicit repo: CandidateRepo): String =
+      Option(repo.findByCandidate(c)).fold {
+        throw CandidateNotFoundException(c)
+      }(c => c.candidate)
+  }
+
   object ValidCandidateVersion {
     def apply(fun: => ResponseEntity[SuccessResponse])(implicit repo: VersionRepo, request: SimpleRequest) = {
       Option(repo.findByCandidateAndVersion(request.getCandidate, request.getVersion))

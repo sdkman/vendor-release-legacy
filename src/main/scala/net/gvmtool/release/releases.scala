@@ -18,23 +18,21 @@ package net.gvmtool.release
 import javax.validation.Valid
 
 import net.gvmtool.release.request.ReleaseRequest
-import net.gvmtool.release.validation.{ValidCandidate, ValidRequest}
+import net.gvmtool.release.validation.{CandidateValidation, ValidRequest}
 import net.gvmtool.status.Created
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation._
 
-trait ReleaseController extends CandidatePersistence with VersionPersistence {
+trait ReleaseController extends CandidatePersistence with VersionPersistence with CandidateValidation {
   @RequestMapping(value = Array("/release"), method = Array(POST))
   def publish(implicit @Valid @RequestBody request: ReleaseRequest, binding: BindingResult) =
     ValidRequest {
-      ValidCandidate {
-        val candidate = request.getCandidate
-        val version = request.getVersion
-        val url = request.getUrl
-        Created(save(Version(candidate, version, url)))
-      }
+      val candidate = request.getCandidate
+      val version = request.getVersion
+      val url = request.getUrl
+      Created(save(Version(validCandidate(candidate), version, url)))
     }
 }
 
