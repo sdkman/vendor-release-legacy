@@ -25,7 +25,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation._
 
-trait DefaultVersionController extends CandidatePersistence with VersionPersistence with CandidateValidation with VersionValidation {
+trait DefaultVersionController extends CandidatePersistence with VersionPersistence with EntityValidation {
   @RequestMapping(value = Array("/default"), method = Array(PUT))
   def default()(implicit @Valid @RequestBody request: DefaultVersionRequest, binding: BindingResult) =
     ValidRequest {
