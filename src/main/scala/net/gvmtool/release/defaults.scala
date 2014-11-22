@@ -18,8 +18,6 @@ package net.gvmtool.release
 import javax.validation.Valid
 
 import net.gvmtool.release.request.DefaultVersionRequest
-import net.gvmtool.release.validation._
-import net.gvmtool.status.Accepted
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.PUT

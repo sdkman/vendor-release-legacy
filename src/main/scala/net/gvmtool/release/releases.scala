@@ -18,8 +18,6 @@ package net.gvmtool.release
 import javax.validation.Valid
 
 import net.gvmtool.release.request.ReleaseRequest
-import net.gvmtool.release.validation.{EntityValidation, ValidRequest}
-import net.gvmtool.status.Created
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.POST

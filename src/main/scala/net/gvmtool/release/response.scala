@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.gvmtool
+package net.gvmtool.release
 
-import net.gvmtool.release.response.{ErrorResponse, SuccessResponse}
+import net.gvmtool.release.response._
 
-package object response {
+object ErrorResponse {
+  def apply(status: Int, message: String) = new ErrorResponse(status, message)
+}
 
-  object ErrorResponse {
-    def apply(status: Int, message: String) = new ErrorResponse(status, message)
-  }
-
-  object SuccessResponse {
-    def apply(id: String, message: String) = new SuccessResponse(id, message)
-  }
+object SuccessResponse {
+  def apply(id: String, message: String) = new SuccessResponse(id, message)
 }

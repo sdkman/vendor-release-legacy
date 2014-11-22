@@ -18,7 +18,7 @@ package net.gvmtool.release
 import javax.validation.ValidationException
 
 import net.gvmtool.release.request.DefaultVersionRequest
-import net.gvmtool.release.response.SuccessResponse
+import net.gvmtool.release.response._
 import org.bson.types.ObjectId
 import org.hamcrest.beans.SamePropertyValuesAs._
 import org.junit.runner.RunWith
