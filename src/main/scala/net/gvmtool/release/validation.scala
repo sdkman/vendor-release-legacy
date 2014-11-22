@@ -32,14 +32,10 @@ package object validation {
 
   trait EntityValidation {
     def validCandidate(c: String)(implicit repo: CandidateRepo): String =
-      Option(repo.findByCandidate(c)).fold {
-        throw CandidateNotFoundException(c)
-      }(c => c.candidate)
+      Option(repo.findByCandidate(c)).fold(throw CandidateNotFoundException(c))(c => c.candidate)
 
     def validVersion(c: String, v: String)(implicit repo: VersionRepo): String =
-      Option(repo.findByCandidateAndVersion(c, v)).fold {
-        throw VersionNotFoundException(c, v)
-      }(v => v.version)
+      Option(repo.findByCandidateAndVersion(c, v)).fold(throw VersionNotFoundException(c, v))(v => v.version)
   }
 
   object ValidCandidateVersion {
