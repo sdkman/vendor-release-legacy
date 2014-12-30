@@ -29,7 +29,7 @@ import org.springframework.stereotype.Repository
 trait CandidatePersistence {
   implicit val candidateRepo: CandidateRepo
   val candidateUpdateRepo: CandidateUpdateRepo
-  def update(c: Candidate) = candidateUpdateRepo.updateDefault(c)
+  def update(c: Candidate) = candidateUpdateRepo.updateDefault(c).copy(default = c.default)
 }
 
 @Repository

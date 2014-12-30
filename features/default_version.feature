@@ -19,7 +19,6 @@ Feature: Default Candidate Version
   Background:
     Given endpoint "/oauth/token" exchanges credentials "auth_username" and "auth_password" for a bearer token
 
-  @pending
   Scenario: Mark an existing Candidate Version as Default
     Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists

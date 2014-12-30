@@ -46,19 +46,21 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
     "mark an existing candidate version as default" in new ControllerUnderTest {
       //given
       val candidate = "groovy"
-      val version = "2.3.6"
-      val request = new DefaultVersionRequest(candidate, version)
+      val oldVersion = "2.3.5"
+      val newVersion = "2.3.6"
 
-      val candidateObj = Candidate(candidate, version)
-      val persisted = candidateObj.copy(id = new ObjectId("5423333bba78831a730c18e2"))
+      val request = new DefaultVersionRequest(candidate, newVersion)
 
-      val versionFound = Version(
-        id = new ObjectId("5426b99bba78e60054fe48ca"), candidate, version,
-        url = "http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip")
+      val candidateObj = Candidate(candidate, oldVersion)
+      when(candidateRepo.findByCandidate(candidate)).thenReturn(candidateObj)
 
-      when(candidateRepo.findByCandidate(candidate)).thenReturn(Candidate(candidate, "2.3.6"))
-      when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persisted)
-      when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionFound)
+      val versionObj = Version(
+          id = new ObjectId("5426b99bba78e60054fe48ca"), candidate, newVersion,
+          url = "http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip")
+      when(mockVersionRepo.findByCandidateAndVersion(candidate, newVersion)).thenReturn(versionObj)
+
+      val persistedObj = candidateObj.copy(id = new ObjectId("5423333bba78831a730c18e2"), default = newVersion)
+      when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persistedObj)
 
       //when
       val response: ResponseEntity[SuccessResponse] = default(request)
@@ -68,8 +70,8 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       response.getBody.getId shouldBe "5423333bba78831a730c18e2"
       response.getBody.getMessage shouldBe "default groovy version: 2.3.6"
 
-      verify(mockVersionRepo).findByCandidateAndVersion(candidate, version)
-      verify(mockCandidateUpdateRepo).updateDefault(argThat[Candidate](samePropertyValuesAs(persisted)))
+      verify(mockVersionRepo).findByCandidateAndVersion(candidate, newVersion)
+      verify(mockCandidateUpdateRepo).updateDefault(argThat[Candidate](samePropertyValuesAs(persistedObj)))
     }
 
     "reject an invalid candidate version as default declaring bad request" in new ControllerUnderTest {
