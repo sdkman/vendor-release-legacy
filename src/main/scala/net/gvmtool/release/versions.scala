@@ -45,3 +45,10 @@ object VersionNotFoundException {
   def apply(candidate: String, version: String) =
     new VersionNotFoundException(s"invalid candidate version: $candidate $version")
 }
+
+class DuplicateVersionException(message: String) extends RuntimeException(message: String)
+
+object DuplicateVersionException {
+  def apply(candidate: String, version: String) =
+    new DuplicateVersionException(s"duplicate candidate version: $candidate $version")
+}

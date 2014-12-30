@@ -34,6 +34,11 @@ trait EntityValidation {
 
   def validVersion(c: String, v: String)(implicit repo: VersionRepo): String =
     Option(repo.findByCandidateAndVersion(c, v)).fold(throw VersionNotFoundException(c, v))(v => v.version)
+
+  def uniqueVersion(c: String, v: String)(implicit repo: VersionRepo): String =
+    Option(repo.findByCandidateAndVersion(c, v))
+      .map(version => throw DuplicateVersionException(version.candidate, version.version))
+      .getOrElse(v)
 }
 
 object ValidCandidateVersion {

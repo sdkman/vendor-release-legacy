@@ -34,4 +34,7 @@ class ExceptionHandlerAdvice {
 
   @ExceptionHandler
   def handle(e: ValidationException) = BadRequest(e.getMessage)
+
+  @ExceptionHandler
+  def handle(e: DuplicateVersionException) = Conflict(e.getMessage)
 }

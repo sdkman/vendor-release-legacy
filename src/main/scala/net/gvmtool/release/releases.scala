@@ -30,7 +30,7 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence wit
       val candidate = request.getCandidate
       val version = request.getVersion
       val url = request.getUrl
-      Created(save(Version(validCandidate(candidate), version, url)))
+      Created(save(Version(validCandidate(candidate), uniqueVersion(candidate, version), url)))
     }
 }
 

@@ -37,6 +37,12 @@ object Created {
 
 }
 
+object Conflict {
+  def apply(m: String) =
+    new ResponseEntity(
+      ErrorResponse(CONFLICT.value, m), CONFLICT)
+}
+
 object ServiceUnavailable {
   def apply(m: String) =
     new ResponseEntity(
