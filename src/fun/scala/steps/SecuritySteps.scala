@@ -20,6 +20,8 @@ import org.scalatest.ShouldMatchers
 import steps.World._
 import support.Http
 
+import scalaj.http.HttpException
+
 class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
 
   And( """^the Client is not Authorised and Authenticated$""") { () =>
@@ -34,5 +36,18 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
     request = Http.post(endpoint, token)
+
+    import scalaj.http.Http.readString
+    try {
+      val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
+      responseCode = rc
+      resultString = rs
+    } catch {
+      case e: HttpException => {
+        responseCode = e.code
+        resultString = e.body
+      }
+    }
+
   }
 }

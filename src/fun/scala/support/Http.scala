@@ -49,6 +49,8 @@ object Http {
         "Accept" -> "application/json",
         "Content-Type" -> "application/json"
       )
+      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.readTimeout(5000))
   }
 
   def putJson(endpoint: String, json: String, token: String): Request = {
@@ -59,5 +61,7 @@ object Http {
         "Accept" -> "application/json",
         "Content-Type" -> "application/json"
       )
+      .option(HttpOptions.connTimeout(1000))
+      .option(HttpOptions.readTimeout(5000))
   }
 }

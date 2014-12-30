@@ -38,6 +38,9 @@ object World {
   var request: Request = null
   var response = Map[String, String]()
 
+  var responseCode: Int = 0
+  var resultString: String = null
+
   val mongoDb = Mongo.primeDatabase("gvm")
   var candidateColl: MongoCollection = null
   var versionColl: MongoCollection = null

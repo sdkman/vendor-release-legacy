@@ -27,6 +27,9 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
   Before() { s =>
     candidateColl = Mongo.createCollection(mongoDb, "candidates")
     versionColl = Mongo.createCollection(mongoDb, "versions")
+
+    responseCode = 0
+    resultString = ""
   }
 
   After() { s =>
@@ -42,15 +45,29 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
 
   When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
     request = Http.postJson(endpoint, json.stripMargin, token)
+
+    //nasty scalaj hack prevents multiple posts
+    import scalaj.http.Http.readString
+    try {
+      val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
+      responseCode = rc
+      resultString = rs
+    } catch {
+      case e: HttpException => {
+        responseCode = e.code
+        resultString = e.body
+      }
+    }
+
   }
 
   Then( """^the status received is "(.*)"$""") { (status: String) =>
-    request.responseCode shouldBe statusCodes(status)
+    responseCode shouldBe statusCodes(status)
   }
 
   Then( """^a valid identifier is received in the response$""") { () =>
     val Pattern = "([0-9a-fA-F]{24})".r
-    mapper.readValue[Map[String, String]](request.asString).get("id") match {
+    mapper.readValue[Map[String, String]](resultString).get("id") match {
       case Some(Pattern(id)) => println(s"Valid identifier found: $id")
       case Some(id) => fail(s"The id $id is not a valid ObjectID")
       case None => fail("No id found.")
@@ -71,22 +88,27 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
 
   When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
     request = Http.putJson(endpoint, payload.stripMargin, token)
+
+    //nasty scalaj hack prevents multiple posts
+    import scalaj.http.Http.readString
+    try {
+      val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
+      responseCode = rc
+      resultString = rs
+    } catch {
+      case e: HttpException => {
+        responseCode = e.code
+        resultString = e.body
+      }
+    }
   }
 
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
-    try {
-      extractMessage(request.asString) shouldBe message
-    } catch {
-      case e: HttpException => extractMessage(e.body) shouldBe message
-    }
+    extractMessage(resultString) shouldBe message
   }
 
   Then( """^the error message received includes "(.*?)"$""") { (message: String) =>
-    try {
-      extractMessage(request.asString) should include(message)
-    } catch {
-      case e: HttpException => extractMessage(e.body) should include(message)
-    }
+    extractMessage(resultString) should include(message)
   }
 
   def extractMessage(str: String) = mapper.readValue[Map[String, String]](str).getOrElse("message", "invalid")

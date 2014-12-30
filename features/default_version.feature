@@ -19,6 +19,7 @@ Feature: Default Candidate Version
   Background:
     Given endpoint "/oauth/token" exchanges credentials "auth_username" and "auth_password" for a bearer token
 
+  @pending
   Scenario: Mark an existing Candidate Version as Default
     Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
@@ -45,7 +46,7 @@ Feature: Default Candidate Version
           |}
     """
     Then the status received is "BAD_REQUEST"
-    And the message "invalid candidate version: groovy 2.3.6" is received
+    And the error message received includes "invalid candidate version: groovy 2.3.6"
 
   Scenario: Attempt to mark a non-existent Candidate Default
     Given Candidate "groovee" does not exist
@@ -57,7 +58,7 @@ Feature: Default Candidate Version
           |}
     """
     Then the status received is "BAD_REQUEST"
-    And the message "not a valid candidate: groovee" is received
+    And the error message received includes "not a valid candidate: groovee"
 
   Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON PUT on the "/default" endpoint:
