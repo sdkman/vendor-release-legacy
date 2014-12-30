@@ -34,6 +34,28 @@ Feature: Release a Candidate Version
     And the message "released groovy version: 2.3.6" is received
     And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published
 
+  @pending
+  Scenario: Attempt to Release a duplicate Version
+    Given the existing Default "groovy" Version is "2.3.5"
+    When a JSON POST on the "/release" endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
+    When a JSON POST on the "/release" endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
+    Then the status received is "CONFLICT"
+    And the error message received includes "Duplicate candidate version received."
+
   Scenario: Attempt to Release a Version for a non-existent Candidate
     Given Candidate "groovee" does not exist
     When a JSON POST on the "/release" endpoint:

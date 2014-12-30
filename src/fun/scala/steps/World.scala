@@ -33,7 +33,8 @@ object World {
     "CREATED" -> 201,
     "ACCEPTED" -> 202,
     "BAD_REQUEST" -> 400,
-    "UNAUTHORIZED" -> 401)
+    "UNAUTHORIZED" -> 401,
+    "CONFLICT" -> 409)
   var request: Request = null
   var response = Map[String, String]()
 
