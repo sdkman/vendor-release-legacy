@@ -37,10 +37,8 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
     Mongo.dropCollection(versionColl)
   }
 
-  Given( """^endpoint "(.*?)" exchanges credentials "(.*?)" and "(.*?)" for a bearer token$""") { (endpoint: String, username: String, password: String) =>
-    val str = Http.obtainToken(endpoint, username, password).asString
-    val bt = mapper.readValue[Map[String, String]](str).getOrElse("access_token", "invalid_token")
-    token = s"Bearer $bt"
+  Given( """^a valid security token "(.*?)"$""") { (securityToken: String) =>
+    token = securityToken
   }
 
   When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>

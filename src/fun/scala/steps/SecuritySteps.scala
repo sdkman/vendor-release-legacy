@@ -29,9 +29,7 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   And( """^the Client is Authorised and Authenticated$""") { () =>
-    val str = Http.obtainToken("/oauth/token", "auth_username", "auth_password").asString
-    val bt = mapper.readValue[Map[String, String]](str).getOrElse("access_token", "invalid_token")
-    token = s"Bearer $bt"
+    token = ""
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>

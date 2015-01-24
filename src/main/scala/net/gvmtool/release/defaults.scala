@@ -23,17 +23,23 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.PUT
 import org.springframework.web.bind.annotation._
 
-trait DefaultVersionController extends CandidatePersistence with VersionPersistence with EntityValidation {
+trait DefaultVersionController extends CandidatePersistence with VersionPersistence with EntityValidation with Authorisation {
   @RequestMapping(value = Array("/default"), method = Array(PUT))
-  def default(@Valid @RequestBody request: DefaultVersionRequest)(implicit binding: BindingResult) =
-    ValidRequest {
-      val candidate = request.getCandidate
-      val version = request.getVersion
-      Accepted(update(Candidate(validCandidate(candidate), validVersion(candidate, version))))
+  def default(@Valid @RequestBody request: DefaultVersionRequest)
+             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") proxySecret: String, binding: BindingResult) =
+
+    Authorised {
+      ValidRequest {
+        val candidate = request.getCandidate
+        val version = request.getVersion
+        Accepted(update(Candidate(validCandidate(candidate), validVersion(candidate, version))))
+      }
     }
+
 }
 
 @RestController
 class DefaultVersions @Autowired()(val versionRepo: VersionRepo,
                                    val candidateRepo: CandidateRepo,
-                                   val candidateUpdateRepo: CandidateUpdateRepo) extends DefaultVersionController
+                                   val candidateUpdateRepo: CandidateUpdateRepo,
+                                   val accessToken: AccessToken) extends DefaultVersionController

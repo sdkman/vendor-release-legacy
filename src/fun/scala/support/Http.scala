@@ -22,20 +22,10 @@ object Http {
 
   val host = "http://localhost:8080"
 
-  def obtainToken(endpoint: String, username: String, password: String): Request = {
-    HttpClient.postData(
-      s"$host$endpoint",
-      s"password=$password&username=$username&grant_type=password&scope=read%20write&client_secret=client_secret&client_id=client_id")
-      .auth("client_id", "client_secret")
-      .header("Content-Type", "application/x-www-form-urlencoded")
-      .option(HttpOptions.connTimeout(1000))
-      .option(HttpOptions.readTimeout(5000))
-  }
-
   def post(endpoint: String, token: String): Request = {
     HttpClient(s"$host$endpoint")
       .headers(
-        "Authorization" -> token,
+        "X-Mashape-Proxy-Secret" -> token,
         "Accept" -> "application/json",
         "Content-Type" -> "application/json")
       .option(HttpOptions.connTimeout(1000))
@@ -45,7 +35,7 @@ object Http {
   def postJson(endpoint: String, json: String, token: String): Request = {
     HttpClient.postData(s"$host$endpoint", json)
       .headers(
-        "Authorization" -> token,
+        "X-Mashape-Proxy-Secret" -> token,
         "Accept" -> "application/json",
         "Content-Type" -> "application/json"
       )
@@ -57,7 +47,7 @@ object Http {
     HttpClient.postData(s"$host$endpoint", json)
       .method("PUT")
       .headers(
-        "Authorization" -> token,
+        "X-Mashape-Proxy-Secret" -> token,
         "Accept" -> "application/json",
         "Content-Type" -> "application/json"
       )

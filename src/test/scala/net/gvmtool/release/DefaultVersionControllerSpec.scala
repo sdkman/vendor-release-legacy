@@ -42,6 +42,8 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
   implicit val binding = mock[BindingResult]
 
+  implicit val proxySecret = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
       //given
@@ -125,12 +127,28 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       e.getMessage should include("Error in object 'defaultVersionRequest'")
       e.getMessage should include("default message [can not be null]")
     }
+
+    "deny access if invalid access token is provided" in new ControllerUnderTest {
+      val candidate = "groovy"
+      val version = "2.3.6"
+
+      val request = new DefaultVersionRequest(candidate, version)
+
+      implicit val proxySecret = "invalid"
+
+      val e = intercept[AuthorisationDeniedException] {
+        default(request)
+      }
+
+      e.getMessage should include("Invalid access token provided.")
+    }
   }
 
   sealed trait ControllerUnderTest extends DefaultVersionController {
     val candidateUpdateRepo = mockCandidateUpdateRepo
     val versionRepo = mockVersionRepo
     val candidateRepo = mockCandidateRepo
+    val accessToken = AccessToken("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI")
   }
 
 }

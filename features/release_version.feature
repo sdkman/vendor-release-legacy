@@ -17,7 +17,7 @@
 Feature: Release a Candidate Version
 
   Background:
-    Given endpoint "/oauth/token" exchanges credentials "auth_username" and "auth_password" for a bearer token
+    Given a valid security token "access_token"
 
   Scenario: Release a Candidate Version
     Given the existing Default "groovy" Version is "2.3.5"

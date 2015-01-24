@@ -40,6 +40,8 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
   implicit val binding = mock[BindingResult]
 
+  implicit val proxySecret = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+
   before {
     reset(mockVersionRepo, mockCandidateRepo)
   }
@@ -128,11 +130,27 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       e.getMessage should include("Error in object 'releaseRequest'")
       e.getMessage should include("default message [can not be null]")
     }
+    
+    "reject access if invalid access token is provided" in new ControllerUnderTest {
+      val candidate = "groovy"
+      val version = "2.3.6"
+      val url = "http://somehost/groovy-binary-2.3.6.zip"
+      val request = new ReleaseRequest(candidate, version, url)
+
+      implicit val proxySecret = "invalid"
+
+      val e = intercept[AuthorisationDeniedException] {
+        publish(request)
+      }
+
+      e.getMessage should include("Invalid access token provided.")
+    }
   }
 
   sealed trait ControllerUnderTest extends ReleaseController {
     val versionRepo = mockVersionRepo
     val candidateRepo = mockCandidateRepo
     val candidateUpdateRepo = mock[CandidateUpdateRepo]
+    val accessToken = AccessToken("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI")
   }
 }

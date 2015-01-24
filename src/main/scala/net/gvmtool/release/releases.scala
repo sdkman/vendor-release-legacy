@@ -23,18 +23,25 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation._
 
-trait ReleaseController extends CandidatePersistence with VersionPersistence with EntityValidation {
+trait ReleaseController extends CandidatePersistence with VersionPersistence with EntityValidation with Authorisation {
+  
   @RequestMapping(value = Array("/release"), method = Array(POST))
-  def publish(@Valid @RequestBody request: ReleaseRequest)(implicit binding: BindingResult) =
-    ValidRequest {
-      val candidate = request.getCandidate
-      val version = request.getVersion
-      val url = request.getUrl
-      Created(save(Version(validCandidate(candidate), uniqueVersion(candidate, version), url)))
+  def publish(@Valid @RequestBody request: ReleaseRequest)
+             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") proxySecret: String, binding: BindingResult) =
+
+    Authorised {
+      ValidRequest {
+        val candidate = request.getCandidate
+        val version = request.getVersion
+        val url = request.getUrl
+        Created(save(Version(validCandidate(candidate), uniqueVersion(candidate, version), url)))
+      }
     }
+
 }
 
 @RestController
 class Releases @Autowired()(val versionRepo: VersionRepo,
                             val candidateRepo: CandidateRepo,
-                            val candidateUpdateRepo: CandidateUpdateRepo) extends ReleaseController
+                            val candidateUpdateRepo: CandidateUpdateRepo,
+                            val accessToken: AccessToken) extends ReleaseController
