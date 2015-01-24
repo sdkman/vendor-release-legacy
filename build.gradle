@@ -35,8 +35,6 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-data-mongodb"
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-starter-remote-shell"
-    compile "org.springframework.boot:spring-boot-starter-security"
-    compile "org.springframework.security.oauth:spring-security-oauth2:2.0.1.RELEASE"
     compile scalaLib("org.mongodb:casbah:2.7.3")
     testCompile "org.mockito:mockito-all:1.9.5"
     testCompile "org.hamcrest:hamcrest-all:1.3"
