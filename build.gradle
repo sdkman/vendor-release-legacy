@@ -15,7 +15,6 @@ buildscript {
     }
 }
 
-
 apply plugin: 'idea'
 apply plugin: 'scala'
 apply plugin: 'spring-boot'
