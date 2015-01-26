@@ -15,7 +15,7 @@
  */
 package net.gvmtool.release
 
-import net.gvmtool.release.response.SuccessResponse
+import net.gvmtool.release.response._
 import org.springframework.http.ResponseEntity
 
 case class AccessToken(value: String)
