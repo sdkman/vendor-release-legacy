@@ -22,7 +22,7 @@ object Http {
 
   val host = "http://localhost:8080"
 
-  def post(endpoint: String, token: String): Request = {
+  def get(endpoint: String, token: String): Request = {
     HttpClient(s"$host$endpoint")
       .headers(
         "X-Mashape-Proxy-Secret" -> token,
