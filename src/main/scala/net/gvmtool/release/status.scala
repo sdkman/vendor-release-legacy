@@ -43,6 +43,10 @@ object Conflict {
       ErrorResponse(CONFLICT.value, m), CONFLICT)
 }
 
+object Forbidden {
+  def apply(m: String) = new ResponseEntity(ErrorResponse(FORBIDDEN.value, m), FORBIDDEN)
+}
+
 object ServiceUnavailable {
   def apply(m: String) =
     new ResponseEntity(

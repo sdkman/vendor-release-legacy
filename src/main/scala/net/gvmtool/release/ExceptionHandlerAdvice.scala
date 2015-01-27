@@ -37,4 +37,7 @@ class ExceptionHandlerAdvice {
 
   @ExceptionHandler
   def handle(e: DuplicateVersionException) = Conflict(e.getMessage)
+
+  @ExceptionHandler
+  def handle(e: AuthorisationDeniedException) = Forbidden(e.getMessage)
 }
