@@ -20,27 +20,21 @@ import org.springframework.http.ResponseEntity
 
 object Accepted {
   def apply(c: Candidate) =
-    new ResponseEntity(
-      SuccessResponse(c.id.toString, s"default ${c.candidate} version: ${c.default}"), ACCEPTED)
+    new ResponseEntity(SuccessResponse(c.id.toString, s"default ${c.candidate} version: ${c.default}"), ACCEPTED)
 }
 
 object BadRequest {
-  def apply(m: String) =
-    new ResponseEntity(
-      ErrorResponse(BAD_REQUEST.value, m), BAD_REQUEST)
+  def apply(m: String) = new ResponseEntity(ErrorResponse(BAD_REQUEST.value, m), BAD_REQUEST)
 }
 
 object Created {
   def apply(v: Version) =
-    new ResponseEntity(
-      SuccessResponse(v.id.toString, s"released ${v.candidate} version: ${v.version}"), CREATED)
+    new ResponseEntity(SuccessResponse(v.id.toString, s"released ${v.candidate} version: ${v.version}"), CREATED)
 
 }
 
 object Conflict {
-  def apply(m: String) =
-    new ResponseEntity(
-      ErrorResponse(CONFLICT.value, m), CONFLICT)
+  def apply(m: String) = new ResponseEntity(ErrorResponse(CONFLICT.value, m), CONFLICT)
 }
 
 object Forbidden {
@@ -48,7 +42,5 @@ object Forbidden {
 }
 
 object ServiceUnavailable {
-  def apply(m: String) =
-    new ResponseEntity(
-      ErrorResponse(SERVICE_UNAVAILABLE.value, m), SERVICE_UNAVAILABLE)
+  def apply(m: String) = new ResponseEntity(ErrorResponse(SERVICE_UNAVAILABLE.value, m), SERVICE_UNAVAILABLE)
 }
