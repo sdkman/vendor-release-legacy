@@ -24,11 +24,11 @@ import org.springframework.web.bind.annotation.RequestMethod.POST
 import org.springframework.web.bind.annotation._
 
 trait ReleaseController extends CandidatePersistence with VersionPersistence with EntityValidation with Authorisation {
-  
+
   @RequestMapping(value = Array("/release"), method = Array(POST))
   def publish(@Valid @RequestBody request: ReleaseRequest)
-             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") proxySecret: String, binding: BindingResult) =
-
+             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") header: String,
+                binding: BindingResult) = {
     Authorised {
       ValidRequest {
         val candidate = request.getCandidate
@@ -37,7 +37,7 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence wit
         Created(save(Version(validCandidate(candidate), uniqueVersion(candidate, version), url)))
       }
     }
-
+  }
 }
 
 @RestController

@@ -42,7 +42,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
   implicit val binding = mock[BindingResult]
 
-  implicit val proxySecret = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+  implicit val header = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
 
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
@@ -134,7 +134,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       val request = new DefaultVersionRequest(candidate, version)
 
-      implicit val proxySecret = "invalid"
+      implicit val header = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
         default(request)
