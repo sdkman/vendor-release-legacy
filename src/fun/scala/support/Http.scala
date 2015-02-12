@@ -22,36 +22,19 @@ object Http {
 
   val host = "http://localhost:8080"
 
-  def get(endpoint: String, token: String): Request = {
-    HttpClient(s"$host$endpoint")
-      .headers(
-        "X-Mashape-Proxy-Secret" -> token,
-        "Accept" -> "application/json",
-        "Content-Type" -> "application/json")
-      .option(HttpOptions.connTimeout(1000))
-      .option(HttpOptions.readTimeout(5000))
-  }
+  def get(endpoint: String)(implicit token: String) = withOptions(HttpClient.get(s"$host$endpoint"))
 
-  def postJson(endpoint: String, json: String, token: String): Request = {
-    HttpClient.postData(s"$host$endpoint", json)
-      .headers(
-        "X-Mashape-Proxy-Secret" -> token,
-        "Accept" -> "application/json",
-        "Content-Type" -> "application/json"
-      )
-      .option(HttpOptions.connTimeout(1000))
-      .option(HttpOptions.readTimeout(5000))
-  }
+  def post(endpoint: String)(implicit token: String) = withOptions(HttpClient.post(s"$host$endpoint"))
 
-  def putJson(endpoint: String, json: String, token: String): Request = {
-    HttpClient.postData(s"$host$endpoint", json)
-      .method("PUT")
-      .headers(
-        "X-Mashape-Proxy-Secret" -> token,
-        "Accept" -> "application/json",
-        "Content-Type" -> "application/json"
-      )
-      .option(HttpOptions.connTimeout(1000))
-      .option(HttpOptions.readTimeout(5000))
-  }
+  def postJson(endpoint: String, json: String)(implicit token: String) = withOptions(HttpClient.postData(s"$host$endpoint", json))
+
+  def putJson(endpoint: String, json: String)(implicit token: String) = withOptions(HttpClient.postData(s"$host$endpoint", json).method("PUT"))
+
+  private def withOptions(http: Request)(implicit token: String): Request = http.headers(
+    "access_token" -> token,
+    "Accept" -> "application/json",
+    "Content-Type" -> "application/json")
+    .option(HttpOptions.connTimeout(1000))
+    .option(HttpOptions.readTimeout(5000))
+
 }

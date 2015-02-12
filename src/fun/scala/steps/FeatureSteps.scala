@@ -42,7 +42,7 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
-    request = Http.postJson(endpoint, json.stripMargin, token)
+    request = Http.postJson(endpoint, json.stripMargin)(token)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString
@@ -85,7 +85,7 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
-    request = Http.putJson(endpoint, payload.stripMargin, token)
+    request = Http.putJson(endpoint, payload.stripMargin)(token)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString

@@ -33,7 +33,7 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
-    request = Http.get(endpoint, token)
+    request = Http.get(endpoint)(token)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString
