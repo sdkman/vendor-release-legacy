@@ -27,8 +27,7 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence wit
 
   @RequestMapping(value = Array("/release"), method = Array(POST))
   def publish(@Valid @RequestBody request: ReleaseRequest)
-             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") header: String,
-                binding: BindingResult) = {
+             (implicit @RequestHeader(value = "access_token") header: String, binding: BindingResult) = {
     Authorised {
       ValidRequest {
         val candidate = request.getCandidate

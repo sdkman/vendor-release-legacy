@@ -26,8 +26,7 @@ import org.springframework.web.bind.annotation._
 trait DefaultVersionController extends CandidatePersistence with VersionPersistence with EntityValidation with Authorisation {
   @RequestMapping(value = Array("/default"), method = Array(PUT))
   def default(@Valid @RequestBody request: DefaultVersionRequest)
-             (implicit @RequestHeader(value = "X-Mashape-Proxy-Secret") proxySecret: String,
-                binding: BindingResult) = {
+             (implicit @RequestHeader(value = "access_token") proxySecret: String, binding: BindingResult) = {
     Authorised {
       ValidRequest {
         val candidate = request.getCandidate
