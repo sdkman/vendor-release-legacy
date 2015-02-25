@@ -17,7 +17,7 @@
 Feature: Default Candidate Version
 
   Background:
-    Given a valid security token "access_token"
+    Given a valid security token "default_token"
 
   Scenario: Mark an existing Candidate Version as Default
     Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists

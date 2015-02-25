@@ -23,7 +23,7 @@ import org.springframework.context.annotation.{Bean, Configuration}
 class AppConfig {
 
   @Value("#{systemEnvironment['ACCESS_TOKEN']}")
-  val headerValue = "access_token"
+  val headerValue = "default_token"
 
   @Bean
   def secureHeader = AccessToken(headerValue)

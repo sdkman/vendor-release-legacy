@@ -29,7 +29,7 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   And( """^the Client is Authorised and Authenticated$""") { () =>
-    token = "access_token"
+    token = "default_token"
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
