@@ -17,6 +17,7 @@ package net.gvmtool.release
 
 import net.gvmtool.release.response._
 import org.scalatest.{ShouldMatchers, WordSpec}
+import org.springframework.http.HttpStatus._
 import org.springframework.http.{HttpStatus, ResponseEntity}
 
 class AuthorisationSpec extends WordSpec with ShouldMatchers {
@@ -28,10 +29,10 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
       implicit val header = "value"
 
       val x = Authorised {
-        new ResponseEntity[SuccessResponse](SuccessResponse("id", "message"), HttpStatus.OK)
+        new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
       }
 
-      x.getStatusCode shouldBe HttpStatus.OK
+      x.getStatusCode shouldBe OK
       x.getBody.getId shouldBe "id"
       x.getBody.getMessage shouldBe "message"
     }
@@ -41,7 +42,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
 
       val e = intercept[AuthorisationDeniedException] {
         Authorised {
-          new ResponseEntity[SuccessResponse](SuccessResponse("id", "message"), HttpStatus.OK)
+          new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
         }
       }
 

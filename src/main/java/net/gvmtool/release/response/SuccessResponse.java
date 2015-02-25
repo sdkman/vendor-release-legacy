@@ -16,12 +16,18 @@
 package net.gvmtool.release.response;
 
 public class SuccessResponse {
+    private int status;
     private String id;
     private String message;
 
-    public SuccessResponse(String id, String message) {
+    public SuccessResponse(int status, String id, String message) {
+        this.status = status;
         this.id = id;
         this.message = message;
+    }
+
+    public Integer getStatus() {
+        return status;
     }
 
     public String getId() {

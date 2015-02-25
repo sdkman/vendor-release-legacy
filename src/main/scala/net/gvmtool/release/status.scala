@@ -20,7 +20,7 @@ import org.springframework.http.ResponseEntity
 
 object Accepted {
   def apply(c: Candidate) =
-    new ResponseEntity(SuccessResponse(c.id.toString, s"default ${c.candidate} version: ${c.default}"), ACCEPTED)
+    new ResponseEntity(SuccessResponse(ACCEPTED.value, c.id.toString, s"default ${c.candidate} version: ${c.default}"), ACCEPTED)
 }
 
 object BadRequest {
@@ -29,7 +29,7 @@ object BadRequest {
 
 object Created {
   def apply(v: Version) =
-    new ResponseEntity(SuccessResponse(v.id.toString, s"released ${v.candidate} version: ${v.version}"), CREATED)
+    new ResponseEntity(SuccessResponse(CREATED.value, v.id.toString, s"released ${v.candidate} version: ${v.version}"), CREATED)
 
 }
 

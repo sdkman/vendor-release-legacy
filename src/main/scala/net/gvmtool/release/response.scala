@@ -22,5 +22,5 @@ object ErrorResponse {
 }
 
 object SuccessResponse {
-  def apply(id: String, message: String) = new SuccessResponse(id, message)
+  def apply(status: Int, id: String, message: String) = new SuccessResponse(status, id, message)
 }
