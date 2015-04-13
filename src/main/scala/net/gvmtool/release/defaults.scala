@@ -29,7 +29,7 @@ trait DefaultVersionController extends CandidatePersistence with VersionPersiste
               @RequestHeader(value = "access_token") token: String,
               @RequestHeader(value = "consumer") consumer: String,
               binding: BindingResult) = {
-    Authorised(token, consumer, request.getCandidate) {
+    Authorised(token, consumer, request) {
       ValidRequest(binding) {
         val candidate = request.getCandidate
         val version = request.getVersion

@@ -15,6 +15,7 @@
  */
 package net.gvmtool.release
 
+import net.gvmtool.release.request.SimpleRequest
 import net.gvmtool.release.response._
 import org.springframework.http.ResponseEntity
 
@@ -27,11 +28,11 @@ trait Authorisation {
 case class AuthorisationDeniedException(message: String) extends RuntimeException(message: String)
 
 object Authorised {
-  def apply(token: String, consumer: String, candidate: String)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
-    if(validAccessToken(accessToken, token) && validConsumer(consumer, candidate)) fun
+  def apply(token: String, consumer: String, request: SimpleRequest)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
+    if(validAccessToken(accessToken, token) && validConsumer(consumer, request)) fun
     else throw AuthorisationDeniedException("Access prohibited.")
 
   private def validAccessToken(accessToken: AccessToken, token: String) = accessToken.value == token
 
-  private def validConsumer(consumer: String, candidate: String) = consumer == candidate
+  private def validConsumer(consumer: String, request: SimpleRequest) = consumer == request.getCandidate
 }

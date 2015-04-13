@@ -33,7 +33,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
       val consumer = "groovy"
       val request = new DefaultVersionRequest("groovy", "2.4.1")
 
-      val x = Authorised(token, consumer, request.getCandidate) {
+      val x = Authorised(token, consumer, request) {
         new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
       }
 
@@ -48,7 +48,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
       val request = new DefaultVersionRequest("groovy", "2.4.1")
 
       val e = intercept[AuthorisationDeniedException] {
-        Authorised(token, consumer, request.getCandidate) {
+        Authorised(token, consumer, request) {
           new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
         }
       }
@@ -62,7 +62,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
       val request = new DefaultVersionRequest("invalid", "2.4.1")
 
       val e = intercept[AuthorisationDeniedException] {
-        Authorised(token, consumer, request.getCandidate) {
+        Authorised(token, consumer, request) {
           new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
         }
       }
