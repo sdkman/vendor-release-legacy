@@ -17,10 +17,13 @@ package net.gvmtool.release
 
 import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
 import org.springframework.http.{HttpStatus, ResponseEntity}
 
+@RunWith(classOf[JUnitRunner])
 class AuthorisationSpec extends WordSpec with ShouldMatchers {
 
   "authorised" should {
@@ -50,7 +53,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
         }
       }
 
-      e.getMessage shouldBe "Invalid access token provided."
+      e.getMessage shouldBe "Access prohibited."
     }
 
     "should throw authorisation denied exception when incorrect consumer header is found" in new AuthContext {
@@ -64,7 +67,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
         }
       }
 
-      e.getMessage shouldBe "Invalid access token provided."
+      e.getMessage shouldBe "Access prohibited."
     }
   }
 

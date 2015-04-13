@@ -28,6 +28,10 @@ case class AuthorisationDeniedException(message: String) extends RuntimeExceptio
 
 object Authorised {
   def apply(token: String, consumer: String, candidate: String)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
-    if(accessToken.value == token && consumer == candidate) fun
+    if(validAccessToken(accessToken, token) && validConsumer(consumer, candidate)) fun
     else throw AuthorisationDeniedException("Access prohibited.")
+
+  private def validAccessToken(accessToken: AccessToken, token: String) = accessToken.value == token
+
+  private def validConsumer(consumer: String, candidate: String) = consumer == candidate
 }
