@@ -40,9 +40,9 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
   val mockCandidateRepo = mock[CandidateRepo]
   val mockVersionRepo = mock[VersionRepo]
 
-  implicit val binding = mock[BindingResult]
-
-  implicit val header = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+  val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+  val consumer = "groovy"
+  val binding = mock[BindingResult]
 
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
@@ -65,7 +65,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persistedObj)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = default(request)
+      val response: ResponseEntity[SuccessResponse] = default(request, token, consumer, binding)
 
       //then
       response.getStatusCode shouldBe ACCEPTED
@@ -87,7 +87,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       //when
       val e = intercept[VersionNotFoundException] {
-        default(request)
+        default(request, token, consumer, binding)
       }
 
       //then
@@ -105,7 +105,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        default(request)
+        default(request, token, consumer, binding)
       }
 
       //then
@@ -121,7 +121,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       when(binding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        default(request)
+        default(request, token, consumer, binding)
       }
 
       e.getMessage should include("Error in object 'defaultVersionRequest'")
@@ -134,10 +134,10 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       val request = new DefaultVersionRequest(candidate, version)
 
-      implicit val header = "invalid"
+      implicit val token = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
-        default(request)
+        default(request, token, consumer, binding)
       }
 
       e.getMessage should include("Invalid access token provided.")

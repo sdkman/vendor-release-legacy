@@ -23,7 +23,7 @@ Feature: Default Candidate Version
     Given a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovy",
@@ -37,7 +37,7 @@ Feature: Default Candidate Version
   Scenario: Attempt to mark a non-existent Candidate Version as Default
     Given the existing Default "groovy" Version is "2.3.5"
     And Candidate "groovy" Version "2.3.6" does not exists
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovy",
@@ -49,7 +49,7 @@ Feature: Default Candidate Version
 
   Scenario: Attempt to mark a non-existent Candidate Default
     Given Candidate "groovee" does not exist
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovee",
@@ -60,7 +60,7 @@ Feature: Default Candidate Version
     And the error message received includes "not a valid candidate: groovee"
 
   Scenario: Attempt to submit malformed JSON with no candidate
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "default" : "2.3.6"
@@ -72,7 +72,7 @@ Feature: Default Candidate Version
     And the error message received includes "Candidate name can not be null"
 
   Scenario: Attempt to submit malformed JSON with no default version
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovy"

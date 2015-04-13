@@ -18,7 +18,7 @@ Feature: Security
 
   Scenario: The Release endpoints can NOT be Accessed when not Authorised
     Given the Client is not Authorised and Authenticated
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release" endpoint for consumer "groovy":
     """
           |{
           |  "candidate" : "groovy",
@@ -31,7 +31,7 @@ Feature: Security
   Scenario: The Release endpoints CAN be Accessed when Authorised
     Given the Client is Authorised and Authenticated
     And the appropriate candidate already exists
-    When a JSON POST on the "/release" endpoint:
+    When a JSON POST on the "/release" endpoint for consumer "groovy":
     """
           |{
           |  "candidate" : "groovy",
@@ -46,7 +46,7 @@ Feature: Security
     And a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovy",
@@ -60,7 +60,7 @@ Feature: Security
     And a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"
-    When a JSON PUT on the "/default" endpoint:
+    When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
           |   "candidate" : "groovy",
@@ -72,20 +72,20 @@ Feature: Security
   @pending
   Scenario: The Admin Mappings endpoint can NOT be Accessed without Authorisation
     Given the Client is not Authorised and Authenticated
-    When the "/admin/mappings" endpoint is accessed
+    When the "/admin/mappings" endpoint is accessed by "groovy"
     Then the status received is "FORBIDDEN"
 
   Scenario: The Admin Mappings endpoint can be Accessed with Authorisation
     Given the Client is Authorised and Authenticated
-    When the "/admin/mappings" endpoint is accessed
+    When the "/admin/mappings" endpoint is accessed by "groovy"
     Then the status received is "OK"
 
   Scenario: The Admin Info endpoint can always be Accessed without Authorisation
     Given the Client is not Authorised and Authenticated
-    When the "/admin/info" endpoint is accessed
+    When the "/admin/info" endpoint is accessed by "groovy"
     Then the status received is "OK"
 
   Scenario: The Admin Health endpoint can always be Accessed without Authorisation
     Given the Client is not Authorised and Authenticated
-    When the "/admin/health" endpoint is accessed
+    When the "/admin/health" endpoint is accessed by "groovy"
     Then the status received is "OK"

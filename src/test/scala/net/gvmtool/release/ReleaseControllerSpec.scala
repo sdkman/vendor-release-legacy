@@ -38,10 +38,10 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
   val mockVersionRepo = mock[VersionRepo]
   val mockCandidateRepo = mock[CandidateRepo]
 
-  implicit val binding = mock[BindingResult]
+  val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+  val consumer = "groovy"
+  val binding = mock[BindingResult]
 
-  implicit val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
-  
   before {
     reset(mockVersionRepo, mockCandidateRepo)
   }
@@ -65,7 +65,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(mockVersionRepo.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = publish(request)
+      val response: ResponseEntity[SuccessResponse] = publish(request, token, consumer, binding)
 
       //then
       response.getStatusCode shouldBe HttpStatus.CREATED
@@ -86,7 +86,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionObj)
 
       val e = intercept[DuplicateVersionException] {
-        publish(request)
+        publish(request, token, consumer, binding)
       }
 
       e.getMessage shouldBe "duplicate candidate version: groovy 2.3.6"
@@ -105,7 +105,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        publish(request)
+        publish(request, token, consumer, binding)
       }
 
       //then
@@ -124,7 +124,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(binding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        publish(request)
+        publish(request, token, consumer, binding)
       }
 
       e.getMessage should include("Error in object 'releaseRequest'")
@@ -140,7 +140,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       implicit val token = "invalid_token"
 
       val e = intercept[AuthorisationDeniedException] {
-        publish(request)
+        publish(request, token, consumer, binding)
       }
 
       e.getMessage should include("Invalid access token provided.")

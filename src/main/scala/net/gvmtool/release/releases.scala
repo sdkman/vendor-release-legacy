@@ -26,10 +26,12 @@ import org.springframework.web.bind.annotation._
 trait ReleaseController extends CandidatePersistence with VersionPersistence with EntityValidation with Authorisation {
 
   @RequestMapping(value = Array("/release"), method = Array(POST))
-  def publish(@Valid @RequestBody request: ReleaseRequest)
-             (implicit @RequestHeader(value = "access_token") token: String, binding: BindingResult) = {
-    Authorised {
-      ValidRequest {
+  def publish(@Valid @RequestBody request: ReleaseRequest,
+              @RequestHeader(value = "access_token") token: String,
+              @RequestHeader(value = "consumer") consumer: String,
+              binding: BindingResult) = {
+    Authorised(token, consumer) {
+      ValidRequest(binding) {
         val candidate = request.getCandidate
         val version = request.getVersion
         val url = request.getUrl

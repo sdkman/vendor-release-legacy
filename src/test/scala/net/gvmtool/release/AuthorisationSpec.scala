@@ -24,11 +24,12 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
 
   "authorised" should {
 
+    val token = "value"
+    val consumer = "groovy"
+
     "should invoke the function when valid auth token is found" in new AuthContext {
 
-      implicit val header = "value"
-
-      val x = Authorised {
+      val x = Authorised(token, consumer) {
         new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
       }
 
@@ -41,7 +42,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
       implicit val headers = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
-        Authorised {
+        Authorised(token, consumer) {
           new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
         }
       }

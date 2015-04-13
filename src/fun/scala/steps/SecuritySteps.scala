@@ -32,8 +32,8 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
     token = "default_token"
   }
 
-  And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
-    request = Http.get(endpoint)(token)
+  And( """^the "(.*)" endpoint is accessed by "(.*)"$""") { (endpoint: String, consumer: String) =>
+    request = Http.get(endpoint, token, consumer)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString

@@ -41,8 +41,8 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
     token = securityToken
   }
 
-  When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
-    request = Http.postJson(endpoint, json.stripMargin)(token)
+  When( """^a JSON POST on the "(.*)" endpoint for consumer "(.*)":$""") { (endpoint: String, consumer: String, json: String) =>
+    request = Http.postJson(endpoint, json.stripMargin, token, consumer)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString
@@ -84,8 +84,8 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
     Mongo.saveCandidate(candidateColl, candidate, version)
   }
 
-  When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
-    request = Http.putJson(endpoint, payload.stripMargin)(token)
+  When( """^a JSON PUT on the "(.*?)" endpoint for consumer "(.*)":$""") { (endpoint: String, consumer: String, payload: String) =>
+    request = Http.putJson(endpoint, payload.stripMargin, token, consumer)
 
     //nasty scalaj hack prevents multiple posts
     import scalaj.http.Http.readString

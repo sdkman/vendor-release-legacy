@@ -23,7 +23,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.validation.BindingResult
 
 object ValidRequest {
-  def apply(fun: => ResponseEntity[SuccessResponse])(implicit binding: BindingResult) =
+  def apply(binding: BindingResult)(fun: => ResponseEntity[SuccessResponse]) =
     if (binding.hasErrors) throw new ValidationException(binding.getAllErrors.toString)
     else fun
 }

@@ -22,16 +22,17 @@ object Http {
 
   val host = "http://localhost:8080"
 
-  def get(endpoint: String)(implicit token: String) = withOptions(HttpClient.get(s"$host$endpoint"))
+  def get(endpoint: String, token: String, consumer: String) = withOptions(HttpClient.get(s"$host$endpoint"), token, consumer)
 
-  def post(endpoint: String)(implicit token: String) = withOptions(HttpClient.post(s"$host$endpoint"))
+  def post(endpoint: String, token: String, consumer: String) = withOptions(HttpClient.post(s"$host$endpoint"), token, consumer)
 
-  def postJson(endpoint: String, json: String)(implicit token: String) = withOptions(HttpClient.postData(s"$host$endpoint", json))
+  def postJson(endpoint: String, json: String, token: String, consumer: String) = withOptions(HttpClient.postData(s"$host$endpoint", json), token, consumer)
 
-  def putJson(endpoint: String, json: String)(implicit token: String) = withOptions(HttpClient.postData(s"$host$endpoint", json).method("PUT"))
+  def putJson(endpoint: String, json: String, token: String, consumer: String) = withOptions(HttpClient.postData(s"$host$endpoint", json).method("PUT"), token, consumer)
 
-  private def withOptions(http: Request)(implicit token: String): Request = http.headers(
+  private def withOptions(http: Request, token: String, consumer: String): Request = http.headers(
     "access_token" -> token,
+    "consumer" -> consumer,
     "Accept" -> "application/json",
     "Content-Type" -> "application/json")
     .option(HttpOptions.connTimeout(1000))
