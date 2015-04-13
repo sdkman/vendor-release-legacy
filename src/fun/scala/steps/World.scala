@@ -28,6 +28,7 @@ object World {
   mapper.registerModule(DefaultScalaModule)
 
   var token = "invalid_token"
+  var consumer = "invalid_consumer"
   val statusCodes = Map(
     "OK" -> 200,
     "CREATED" -> 201,

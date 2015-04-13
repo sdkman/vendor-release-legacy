@@ -26,6 +26,7 @@ class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
 
   And( """^the Client is not Authorised and Authenticated$""") { () =>
     token = "invalid_token"
+    consumer = "invalid_consumer"
   }
 
   And( """^the Client is Authorised and Authenticated$""") { () =>

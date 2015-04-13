@@ -27,7 +27,7 @@ trait Authorisation {
 case class AuthorisationDeniedException(message: String) extends RuntimeException(message: String)
 
 object Authorised {
-  def apply(token: String, consumer: String)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
-    if(accessToken.value == token) fun
+  def apply(token: String, consumer: String, candidate: String)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
+    if(accessToken.value == token && consumer == candidate) fun
     else throw AuthorisationDeniedException("Invalid access token provided.")
 }

@@ -98,6 +98,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
     "reject invalid candidate as bad request when marking default" in new ControllerUnderTest {
       //given
       val candidate = "groovee"
+      val consumer = "groovee"
       val version = "2.3.7"
       val request = new DefaultVersionRequest(candidate, version)
 
@@ -114,6 +115,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
     "fail validation if field is null" in new ControllerUnderTest {
       val version = "2.3.7"
+      val consumer = null
       val request = new DefaultVersionRequest(null, version)
 
       val error = new ObjectError("defaultVersionRequest", "can not be null")
@@ -134,7 +136,22 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       val request = new DefaultVersionRequest(candidate, version)
 
-      implicit val token = "invalid"
+      val token = "invalid"
+
+      val e = intercept[AuthorisationDeniedException] {
+        default(request, token, consumer, binding)
+      }
+
+      e.getMessage should include("Invalid access token provided.")
+    }
+
+    "deny access if invalid consumer header is provided" in new ControllerUnderTest {
+      val candidate = "groovy"
+      val version = "2.3.6"
+
+      val request = new DefaultVersionRequest(candidate, version)
+
+      val consumer = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
         default(request, token, consumer, binding)

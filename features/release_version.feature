@@ -56,18 +56,18 @@ Feature: Release a Candidate Version
     And the error message received includes "duplicate candidate version: groovy 2.3.6"
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
-    Given Candidate "groovee" does not exist
+    Given Candidate "groovy" does not exist
     When a JSON POST on the "/release" endpoint for consumer "groovy":
     """
           |{
-          |  "candidate" : "groovee",
+          |  "candidate" : "groovy",
           |  "version" : "2.3.6",
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
     Then the status received is "BAD_REQUEST"
-    And the error message received includes "not a valid candidate: groovee"
-    And Candidate "groovee" Version "2.3.6" does not exists
+    And the error message received includes "not a valid candidate: groovy"
+    And Candidate "groovy" Version "2.3.6" does not exists
 
   Scenario: Attempt to submit malformed JSON with no Candidate
     When a JSON POST on the "/release" endpoint for consumer "groovy":

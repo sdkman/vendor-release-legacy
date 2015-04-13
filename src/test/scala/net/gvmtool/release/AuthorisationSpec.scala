@@ -15,6 +15,7 @@
  */
 package net.gvmtool.release
 
+import net.gvmtool.release.request.DefaultVersionRequest
 import net.gvmtool.release.response._
 import org.scalatest.{ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
@@ -24,12 +25,12 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
 
   "authorised" should {
 
-    val token = "value"
-    val consumer = "groovy"
+    "should invoke the function when valid auth token and consumer is found" in new AuthContext {
+      val token = "value"
+      val consumer = "groovy"
+      val request = new DefaultVersionRequest("groovy", "2.4.1")
 
-    "should invoke the function when valid auth token is found" in new AuthContext {
-
-      val x = Authorised(token, consumer) {
+      val x = Authorised(token, consumer, request.getCandidate) {
         new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
       }
 
@@ -39,10 +40,26 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
     }
 
     "should throw authorisation denied exception when incorrect auth token is found" in new AuthContext {
-      implicit val headers = "invalid"
+      val token = "invalid"
+      val consumer = "groovy"
+      val request = new DefaultVersionRequest("groovy", "2.4.1")
 
       val e = intercept[AuthorisationDeniedException] {
-        Authorised(token, consumer) {
+        Authorised(token, consumer, request.getCandidate) {
+          new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
+        }
+      }
+
+      e.getMessage shouldBe "Invalid access token provided."
+    }
+
+    "should throw authorisation denied exception when incorrect consumer header is found" in new AuthContext {
+      val token = "value"
+      val consumer = "groovy"
+      val request = new DefaultVersionRequest("invalid", "2.4.1")
+
+      val e = intercept[AuthorisationDeniedException] {
+        Authorised(token, consumer, request.getCandidate) {
           new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
         }
       }

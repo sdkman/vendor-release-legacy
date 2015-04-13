@@ -101,6 +101,8 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
       val request = new ReleaseRequest(candidate, version, url)
 
+      val consumer = "groovee"
+
       when(mockCandidateRepo.findByCandidate(candidate)).thenReturn(null)
 
       //when
@@ -116,8 +118,9 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
     "fail validation if field is null" in new ControllerUnderTest {
       val version = "2.3.7"
       val url = "url"
-
       val request = new ReleaseRequest(null, version, url)
+
+      val consumer = null
 
       val error = new ObjectError("releaseRequest", "can not be null")
       when(binding.hasErrors).thenReturn(true)
@@ -137,7 +140,24 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val url = "http://somehost/groovy-binary-2.3.6.zip"
       val request = new ReleaseRequest(candidate, version, url)
 
-      implicit val token = "invalid_token"
+      val token = "invalid_token"
+
+      val e = intercept[AuthorisationDeniedException] {
+        publish(request, token, consumer, binding)
+      }
+
+      e.getMessage should include("Invalid access token provided.")
+    }
+
+    "reject access if invalid consumer header is provided" in new ControllerUnderTest {
+      val consumer = "invalid"
+
+      val candidate = "groovy"
+      val version = "2.3.6"
+      val url = "http://somehost/groovy-binary-2.3.6.zip"
+      val request = new ReleaseRequest(candidate, version, url)
+
+      val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
 
       val e = intercept[AuthorisationDeniedException] {
         publish(request, token, consumer, binding)

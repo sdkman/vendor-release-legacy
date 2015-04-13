@@ -30,7 +30,7 @@ trait ReleaseController extends CandidatePersistence with VersionPersistence wit
               @RequestHeader(value = "access_token") token: String,
               @RequestHeader(value = "consumer") consumer: String,
               binding: BindingResult) = {
-    Authorised(token, consumer) {
+    Authorised(token, consumer, request.getCandidate) {
       ValidRequest(binding) {
         val candidate = request.getCandidate
         val version = request.getVersion

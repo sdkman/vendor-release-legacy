@@ -48,16 +48,16 @@ Feature: Default Candidate Version
     And the error message received includes "invalid candidate version: groovy 2.3.6"
 
   Scenario: Attempt to mark a non-existent Candidate Default
-    Given Candidate "groovee" does not exist
+    Given Candidate "groovy" does not exist
     When a JSON PUT on the "/default" endpoint for consumer "groovy":
     """
           |{
-          |   "candidate" : "groovee",
+          |   "candidate" : "groovy",
           |   "default" : "2.3.6"
           |}
     """
     Then the status received is "BAD_REQUEST"
-    And the error message received includes "not a valid candidate: groovee"
+    And the error message received includes "not a valid candidate: groovy"
 
   Scenario: Attempt to submit malformed JSON with no candidate
     When a JSON PUT on the "/default" endpoint for consumer "groovy":
