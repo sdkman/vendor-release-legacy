@@ -40,8 +40,8 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
   implicit val binding = mock[BindingResult]
 
-  implicit val header = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
-
+  implicit val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
+  
   before {
     reset(mockVersionRepo, mockCandidateRepo)
   }
@@ -137,7 +137,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val url = "http://somehost/groovy-binary-2.3.6.zip"
       val request = new ReleaseRequest(candidate, version, url)
 
-      implicit val header = "invalid_token"
+      implicit val token = "invalid_token"
 
       val e = intercept[AuthorisationDeniedException] {
         publish(request)
