@@ -146,7 +146,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
         publish(request, token, consumer, binding)
       }
 
-      e.getMessage should include("Invalid access token provided.")
+      e.getMessage should include("Access prohibited.")
     }
 
     "reject access if invalid consumer header is provided" in new ControllerUnderTest {
@@ -163,7 +163,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
         publish(request, token, consumer, binding)
       }
 
-      e.getMessage should include("Invalid access token provided.")
+      e.getMessage should include("Access prohibited.")
     }
   }
 

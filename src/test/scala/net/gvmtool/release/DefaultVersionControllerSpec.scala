@@ -142,7 +142,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
         default(request, token, consumer, binding)
       }
 
-      e.getMessage should include("Invalid access token provided.")
+      e.getMessage should include("Access prohibited.")
     }
 
     "deny access if invalid consumer header is provided" in new ControllerUnderTest {
@@ -157,7 +157,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
         default(request, token, consumer, binding)
       }
 
-      e.getMessage should include("Invalid access token provided.")
+      e.getMessage should include("Access prohibited.")
     }
   }
 
