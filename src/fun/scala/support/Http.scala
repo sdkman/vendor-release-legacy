@@ -15,6 +15,8 @@
  */
 package support
 
+import steps.World
+
 import scalaj.http.Http.Request
 import scalaj.http.{Http => HttpClient, HttpOptions}
 
@@ -22,17 +24,17 @@ object Http {
 
   val host = "http://localhost:8080"
 
-  def get(endpoint: String, token: String, consumer: String) = withOptions(HttpClient.get(s"$host$endpoint"), token, consumer)
+  def get(endpoint: String) = withOptions(HttpClient.get(s"$host$endpoint"))
 
-  def post(endpoint: String, token: String, consumer: String) = withOptions(HttpClient.post(s"$host$endpoint"), token, consumer)
+  def post(endpoint: String) = withOptions(HttpClient.post(s"$host$endpoint"))
 
-  def postJson(endpoint: String, json: String, token: String, consumer: String) = withOptions(HttpClient.postData(s"$host$endpoint", json), token, consumer)
+  def postJson(endpoint: String, json: String) = withOptions(HttpClient.postData(s"$host$endpoint", json))
 
-  def putJson(endpoint: String, json: String, token: String, consumer: String) = withOptions(HttpClient.postData(s"$host$endpoint", json).method("PUT"), token, consumer)
+  def putJson(endpoint: String, json: String) = withOptions(HttpClient.postData(s"$host$endpoint", json).method("PUT"))
 
-  private def withOptions(http: Request, token: String, consumer: String): Request = http.headers(
-    "access_token" -> token,
-    "consumer" -> consumer,
+  private def withOptions(http: Request): Request = http.headers(
+    "access_token" -> World.token,
+    "consumer" -> World.consumer,
     "Accept" -> "application/json",
     "Content-Type" -> "application/json")
     .option(HttpOptions.connTimeout(1000))

@@ -20,59 +20,52 @@ import org.scalatest._
 import steps.World._
 import support.Http
 
+import scalaj.http.Http.readString
 import scalaj.http.HttpException
 
 class HttpSteps extends ScalaDsl with EN with ShouldMatchers {
   When( """^a JSON POST on the "(.*)" endpoint:$""") { (endpoint: String, json: String) =>
-    request = Http.postJson(endpoint, json.stripMargin, token, consumer)
+    request = Http.postJson(endpoint, json.stripMargin)
 
     //nasty scalaj hack prevents multiple posts
-    import scalaj.http.Http.readString
     try {
       val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
       responseCode = rc
       resultString = rs
     } catch {
-      case e: HttpException => {
+      case e: HttpException =>
         responseCode = e.code
         resultString = e.body
-      }
     }
   }
 
   When( """^a JSON PUT on the "(.*?)" endpoint:$""") { (endpoint: String, payload: String) =>
-    request = Http.putJson(endpoint, payload.stripMargin, token, consumer)
+    request = Http.putJson(endpoint, payload.stripMargin)
 
     //nasty scalaj hack prevents multiple posts
-    import scalaj.http.Http.readString
     try {
       val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
       responseCode = rc
       resultString = rs
     } catch {
-      case e: HttpException => {
+      case e: HttpException =>
         responseCode = e.code
         resultString = e.body
-      }
     }
   }
 
   And( """^the "(.*)" endpoint is accessed$""") { (endpoint: String) =>
-    request = Http.get(endpoint, token, consumer)
+    request = Http.get(endpoint)
 
     //nasty scalaj hack prevents multiple posts
-    import scalaj.http.Http.readString
     try {
       val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
       responseCode = rc
       resultString = rs
     } catch {
-      case e: HttpException => {
+      case e: HttpException =>
         responseCode = e.code
         resultString = e.body
-      }
     }
-
   }
-
 }
