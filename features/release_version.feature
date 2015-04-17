@@ -17,11 +17,11 @@
 Feature: Release a Candidate Version
 
   Background:
-    Given a valid security token "default_token"
+    Given the Client is Authorised and Authenticated as "groovy"
 
   Scenario: Release a Candidate Version
     Given the existing Default "groovy" Version is "2.3.5"
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -36,7 +36,7 @@ Feature: Release a Candidate Version
 
   Scenario: Attempt to Release a duplicate Version
     Given the existing Default "groovy" Version is "2.3.5"
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -44,7 +44,7 @@ Feature: Release a Candidate Version
           |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
           |}
     """
-    And a JSON POST on the "/release" endpoint for consumer "groovy":
+    And a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -57,7 +57,7 @@ Feature: Release a Candidate Version
 
   Scenario: Attempt to Release a Version for a non-existent Candidate
     Given Candidate "groovy" does not exist
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -70,7 +70,7 @@ Feature: Release a Candidate Version
     And Candidate "groovy" Version "2.3.6" does not exists
 
   Scenario: Attempt to submit malformed JSON with no Candidate
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "version" : "2.3.6",
@@ -82,7 +82,7 @@ Feature: Release a Candidate Version
     And the error message received includes "Candidate can not be null."
 
   Scenario: Attempt to submit malformed JSON with no Version
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",
@@ -94,7 +94,7 @@ Feature: Release a Candidate Version
     And the error message received includes "Version can not be null."
 
   Scenario: Attempt to submit malformed JSON with no URL
-    When a JSON POST on the "/release" endpoint for consumer "groovy":
+    When a JSON POST on the "/release" endpoint:
     """
           |{
           |  "candidate" : "groovy",

@@ -18,46 +18,8 @@ package steps
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest.ShouldMatchers
 import steps.World._
-import support.{Http, Mongo}
-
-import scalaj.http.HttpException
 
 class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
-
-  Before() { s =>
-    candidateColl = Mongo.createCollection(mongoDb, "candidates")
-    versionColl = Mongo.createCollection(mongoDb, "versions")
-
-    responseCode = 0
-    resultString = ""
-  }
-
-  After() { s =>
-    Mongo.dropCollection(candidateColl)
-    Mongo.dropCollection(versionColl)
-  }
-
-  Given( """^a valid security token "(.*?)"$""") { (securityToken: String) =>
-    token = securityToken
-  }
-
-  When( """^a JSON POST on the "(.*)" endpoint for consumer "(.*)":$""") { (endpoint: String, consumer: String, json: String) =>
-    request = Http.postJson(endpoint, json.stripMargin, token, consumer)
-
-    //nasty scalaj hack prevents multiple posts
-    import scalaj.http.Http.readString
-    try {
-      val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
-      responseCode = rc
-      resultString = rs
-    } catch {
-      case e: HttpException => {
-        responseCode = e.code
-        resultString = e.body
-      }
-    }
-
-  }
 
   Then( """^the status received is "(.*)"$""") { (status: String) =>
     responseCode shouldBe statusCodes(status)
@@ -72,35 +34,6 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
     }
   }
 
-  Then( """^"(.*?)" Version "(.*?)" with URL "(.*?)" was published$""") { (candidate: String, version: String, url: String) =>
-    Mongo.versionPublished(versionColl, candidate, version, url) shouldBe true
-  }
-
-  Given( """^a "(.*?)" Version "(.*?)" with URL "(.*?)" already exists$""") { (candidate: String, version: String, url: String) =>
-    Mongo.saveVersion(versionColl, candidate, version, url)
-  }
-
-  Given( """^the existing Default "(.*?)" Version is "(.*?)"$""") { (candidate: String, version: String) =>
-    Mongo.saveCandidate(candidateColl, candidate, version)
-  }
-
-  When( """^a JSON PUT on the "(.*?)" endpoint for consumer "(.*)":$""") { (endpoint: String, consumer: String, payload: String) =>
-    request = Http.putJson(endpoint, payload.stripMargin, token, consumer)
-
-    //nasty scalaj hack prevents multiple posts
-    import scalaj.http.Http.readString
-    try {
-      val (rc, hm, rs) = request.asHeadersAndParse[String](readString)
-      responseCode = rc
-      resultString = rs
-    } catch {
-      case e: HttpException => {
-        responseCode = e.code
-        resultString = e.body
-      }
-    }
-  }
-
   Then( """^the message "(.*?)" is received$""") { (message: String) =>
     extractMessage(resultString) shouldBe message
   }
@@ -110,20 +43,4 @@ class FeatureSteps extends ScalaDsl with EN with ShouldMatchers {
   }
 
   def extractMessage(str: String) = mapper.readValue[Map[String, String]](str).getOrElse("message", "invalid")
-
-  Then( """^the Default "(.*?)" Version has changed to "(.*?)"$""") { (candidate: String, version: String) =>
-    Mongo.isDefault(candidateColl, candidate, version) shouldBe true
-  }
-
-  Given( """^Candidate "(.*?)" Version "(.*?)" does not exists$""") { (candidate: String, version: String) =>
-    Mongo.versionExists(versionColl, candidate, version) shouldBe false
-  }
-
-  Given( """^Candidate "(.*?)" does not exist$""") { (candidate: String) =>
-    Mongo.candidateExists(candidateColl, candidate) shouldBe false
-  }
-
-  Given( """^the appropriate candidate already exists$""") { () =>
-    Mongo.saveCandidate(candidateColl, "groovy", "2.3.6")
-  }
 }

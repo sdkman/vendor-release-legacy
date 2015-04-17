@@ -16,19 +16,21 @@
 package steps
 
 import cucumber.api.scala.{EN, ScalaDsl}
-import org.scalatest.ShouldMatchers
+import org.scalatest._
 import steps.World._
+import support.Mongo
 
-class SecuritySteps extends ScalaDsl with EN with ShouldMatchers {
+class Env extends ScalaDsl with EN with ShouldMatchers {
+  Before() { s =>
+    candidateColl = Mongo.createCollection(mongoDb, "candidates")
+    versionColl = Mongo.createCollection(mongoDb, "versions")
 
-  And( """^the Client is not Authorised and Authenticated$""") { () =>
-    token = "invalid_token"
-    consumer = "invalid_consumer"
+    responseCode = 0
+    resultString = ""
   }
 
-  And( """^the Client is Authorised and Authenticated as "(.*)"$""") { (principal: String) =>
-    token = "default_token"
-    consumer = principal
+  After() { s =>
+    Mongo.dropCollection(candidateColl)
+    Mongo.dropCollection(versionColl)
   }
-
 }
