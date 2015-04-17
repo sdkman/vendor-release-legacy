@@ -197,7 +197,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Bef
     val candidateUpdateRepo = mockCandidateUpdateRepo
     val versionRepo = mockVersionRepo
     val candidateRepo = mockCandidateRepo
-    val accessToken = AccessToken("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI")
+    val secureHeaders = SecureHeaders("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI", "admin")
   }
 
 }

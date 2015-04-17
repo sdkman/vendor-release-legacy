@@ -28,9 +28,23 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
 
   "authorised" should {
 
-    "should invoke the function when valid auth token and consumer is found" in new AuthContext {
+    "should invoke the function when valid auth token and consumer header is found" in new AuthContext {
       val token = "value"
       val consumer = "groovy"
+      val request = new DefaultVersionRequest("groovy", "2.4.1")
+
+      val x = Authorised(token, consumer, request) {
+        new ResponseEntity[SuccessResponse](SuccessResponse(OK.value, "id", "message"), OK)
+      }
+
+      x.getStatusCode shouldBe OK
+      x.getBody.getId shouldBe "id"
+      x.getBody.getMessage shouldBe "message"
+    }
+
+    "should invoke the function when valid auth token and admin header is found" in new AuthContext {
+      val token = "value"
+      val consumer = "admin"
       val request = new DefaultVersionRequest("groovy", "2.4.1")
 
       val x = Authorised(token, consumer, request) {
@@ -72,7 +86,7 @@ class AuthorisationSpec extends WordSpec with ShouldMatchers {
   }
 
   sealed class AuthContext extends Authorisation {
-    override implicit val accessToken: AccessToken = new AccessToken("value")
+    override implicit val secureHeaders: SecureHeaders = new SecureHeaders("value", "admin")
   }
 
 }

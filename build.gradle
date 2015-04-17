@@ -103,7 +103,8 @@ cloudfoundry {
             MONGO_DB_NAME: envVariableAsGlobal("CF_MONGO_DB_NAME", false),
             MONGO_USERNAME: envVariableAsGlobal("CF_MONGO_USERNAME", false),
             MONGO_PASSWORD: envVariableAsGlobal("CF_MONGO_PASSWORD", false),
-            ACCESS_TOKEN: envVariableAsGlobal("CF_ACCESS_TOKEN", false)
+            ACCESS_TOKEN: envVariableAsGlobal("CF_ACCESS_TOKEN", false),
+            ADMIN_HEADER: envVariableAsGlobal("CF_ADMIN_HEADER", false)
     ]
 }
 

@@ -19,23 +19,23 @@ import net.gvmtool.release.request.SimpleRequest
 import net.gvmtool.release.response._
 import org.springframework.http.ResponseEntity
 
-case class AccessToken(value: String)
+case class SecureHeaders(token: String, admin: String)
 
 trait Authorisation {
-  implicit val accessToken: AccessToken
+  implicit val secureHeaders: SecureHeaders
 }
 
 case class AuthorisationDeniedException(message: String) extends RuntimeException(message: String)
 
 object Authorised {
-  def apply(token: String, consumer: String, request: SimpleRequest)(fun: => ResponseEntity[SuccessResponse])(implicit accessToken: AccessToken) =
-    if(validAccessToken(accessToken, token) && validConsumer(consumer, request)) fun
+  def apply(token: String, consumer: String, request: SimpleRequest)(fun: => ResponseEntity[SuccessResponse])(implicit secureHeaders: SecureHeaders) =
+    if(validAccessToken(secureHeaders, token) && validConsumer(consumer, request)) fun
     else throw AuthorisationDeniedException("Access prohibited.")
 
-  private def validAccessToken(accessToken: AccessToken, token: String) = accessToken.value == token
+  private def validAccessToken(secureHeaders: SecureHeaders, token: String) = secureHeaders.token == token
 
   val adminConsumer = "admin"
 
-  private def validConsumer(consumer: String, request: SimpleRequest) =
-    consumer == request.getCandidate || consumer == adminConsumer
+  private def validConsumer(consumer: String, request: SimpleRequest)(implicit secureHeaders: SecureHeaders) =
+    consumer == request.getCandidate || consumer == secureHeaders.admin
 }

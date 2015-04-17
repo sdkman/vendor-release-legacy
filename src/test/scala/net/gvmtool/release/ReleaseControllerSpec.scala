@@ -196,6 +196,6 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
     val versionRepo = mockVersionRepo
     val candidateRepo = mockCandidateRepo
     val candidateUpdateRepo = mock[CandidateUpdateRepo]
-    val accessToken = AccessToken("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI")
+    val secureHeaders = SecureHeaders("1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI", "admin")
   }
 }

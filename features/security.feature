@@ -42,7 +42,7 @@ Feature: Security
     Then the status received is "CREATED"
 
   Scenario: The Release endpoints CAN be Accessed when Authorised as Administrator
-    Given the Client is Authorised and Authenticated as "admin"
+    Given the Client is Authorised and Authenticated as "default_admin"
     And the appropriate candidate already exists
     When a JSON POST on the "/release" endpoint:
     """
@@ -83,7 +83,7 @@ Feature: Security
     Then the status received is "ACCEPTED"
 
   Scenario: The Default endpoints CAN be Accessed when Authorised as Administrator
-    Given the Client is Authorised and Authenticated as "admin"
+    Given the Client is Authorised and Authenticated as "default_admin"
     And a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"
