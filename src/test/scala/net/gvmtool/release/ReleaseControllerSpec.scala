@@ -40,10 +40,10 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
   val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
   val consumer = "groovy"
-  val binding = mock[BindingResult]
+  val mockBinding = mock[BindingResult]
 
   before {
-    reset(mockVersionRepo, mockCandidateRepo)
+    reset(mockVersionRepo, mockCandidateRepo, mockBinding)
   }
 
   "release controller" should {
@@ -65,7 +65,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(mockVersionRepo.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = publish(request, token, consumer, binding)
+      val response: ResponseEntity[SuccessResponse] = publish(request, token, consumer, mockBinding)
 
       //then
       response.getStatusCode shouldBe HttpStatus.CREATED
@@ -86,7 +86,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(versionObj)
 
       val e = intercept[DuplicateVersionException] {
-        publish(request, token, consumer, binding)
+        publish(request, token, consumer, mockBinding)
       }
 
       e.getMessage shouldBe "duplicate candidate version: groovy 2.3.6"
@@ -107,7 +107,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        publish(request, token, consumer, binding)
+        publish(request, token, consumer, mockBinding)
       }
 
       //then
@@ -123,11 +123,11 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val consumer = null
 
       val error = new ObjectError("releaseRequest", "can not be null")
-      when(binding.hasErrors).thenReturn(true)
-      when(binding.getAllErrors).thenReturn(List[ObjectError](error))
+      when(mockBinding.hasErrors).thenReturn(true)
+      when(mockBinding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        publish(request, token, consumer, binding)
+        publish(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Error in object 'releaseRequest'")
@@ -143,7 +143,7 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val token = "invalid_token"
 
       val e = intercept[AuthorisationDeniedException] {
-        publish(request, token, consumer, binding)
+        publish(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Access prohibited.")
@@ -160,10 +160,35 @@ class ReleaseControllerSpec extends WordSpec with ShouldMatchers with MockitoSug
       val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
 
       val e = intercept[AuthorisationDeniedException] {
-        publish(request, token, consumer, binding)
+        publish(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Access prohibited.")
+    }
+
+    "allow access if the admin consumer header is provided" in new ControllerUnderTest {
+      //given
+      val candidate = "groovy"
+      val version = "2.3.6"
+      val url = "http://somehost/groovy-binary-2.3.6.zip"
+      val versionObj = Version(null, candidate, version, url)
+      val request = new ReleaseRequest(candidate, version, url)
+
+      val candidateObj = Candidate(new ObjectId("5426b99bba78e60054fe48ca"), candidate, version)
+      when(mockCandidateRepo.findByCandidate(candidate)).thenReturn(candidateObj)
+
+      when(mockVersionRepo.findByCandidateAndVersion(candidate, version)).thenReturn(null)
+
+      val persisted = versionObj.copy(id = new ObjectId("54205c4019b02458bdd828db"))
+      when(mockVersionRepo.save(argThat[Version](samePropertyValuesAs(versionObj)))).thenReturn(persisted)
+
+      val adminConsumer = "admin"
+
+      //when
+      val response: ResponseEntity[SuccessResponse] = publish(request, token, adminConsumer, mockBinding)
+
+      //then
+      response.getStatusCode shouldBe HttpStatus.CREATED
     }
   }
 

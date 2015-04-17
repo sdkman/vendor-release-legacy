@@ -28,8 +28,21 @@ Feature: Security
     """
     Then the status received is "FORBIDDEN"
 
-  Scenario: The Release endpoints CAN be Accessed when Authorised
+  Scenario: The Release endpoints CAN be Accessed when Authorised as valid Consumer
     Given the Client is Authorised and Authenticated as "groovy"
+    And the appropriate candidate already exists
+    When a JSON POST on the "/release" endpoint:
+    """
+          |{
+          |  "candidate" : "groovy",
+          |  "version" : "2.3.6",
+          |  "url" : "http://hostname/groovy-binary-2.3.6.zip"
+          |}
+    """
+    Then the status received is "CREATED"
+
+  Scenario: The Release endpoints CAN be Accessed when Authorised as Administrator
+    Given the Client is Authorised and Authenticated as "admin"
     And the appropriate candidate already exists
     When a JSON POST on the "/release" endpoint:
     """
@@ -55,8 +68,22 @@ Feature: Security
     """
     Then the status received is "FORBIDDEN"
 
-  Scenario: The Default endpoints CAN be Accessed when Authorised
+  Scenario: The Default endpoints CAN be Accessed when Authorised as valid Consumer
     Given the Client is Authorised and Authenticated as "groovy"
+    And a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
+    And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
+    And the existing Default "groovy" Version is "2.3.5"
+    When a JSON PUT on the "/default" endpoint:
+    """
+          |{
+          |   "candidate" : "groovy",
+          |   "default" : "2.3.6"
+          |}
+    """
+    Then the status received is "ACCEPTED"
+
+  Scenario: The Default endpoints CAN be Accessed when Authorised as Administrator
+    Given the Client is Authorised and Authenticated as "admin"
     And a "groovy" Version "2.3.5" with URL "http://hostname/groovy-binary-2.3.5.zip" already exists
     And a "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" already exists
     And the existing Default "groovy" Version is "2.3.5"

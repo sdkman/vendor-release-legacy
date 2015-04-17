@@ -26,7 +26,7 @@ import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
-import org.scalatest.{ShouldMatchers, WordSpec}
+import org.scalatest.{BeforeAndAfter, ShouldMatchers, WordSpec}
 import org.springframework.http.HttpStatus._
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.{BindingResult, ObjectError}
@@ -34,7 +34,7 @@ import org.springframework.validation.{BindingResult, ObjectError}
 import scala.collection.JavaConversions._
 
 @RunWith(classOf[JUnitRunner])
-class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with MockitoSugar {
+class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with BeforeAndAfter with MockitoSugar {
 
   val mockCandidateUpdateRepo = mock[CandidateUpdateRepo]
   val mockCandidateRepo = mock[CandidateRepo]
@@ -42,7 +42,11 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
   val token = "1HvHCVcDjUIjJxms8tGTkTdPSngIXqVtWKLluBl9qZ9TtM5AKI"
   val consumer = "groovy"
-  val binding = mock[BindingResult]
+  val mockBinding = mock[BindingResult]
+
+  before {
+    reset(mockCandidateUpdateRepo, mockCandidateRepo, mockVersionRepo, mockBinding)
+  }
 
   "default version controller" should {
     "mark an existing candidate version as default" in new ControllerUnderTest {
@@ -65,7 +69,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persistedObj)
 
       //when
-      val response: ResponseEntity[SuccessResponse] = default(request, token, consumer, binding)
+      val response: ResponseEntity[SuccessResponse] = default(request, token, consumer, mockBinding)
 
       //then
       response.getStatusCode shouldBe ACCEPTED
@@ -87,7 +91,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       //when
       val e = intercept[VersionNotFoundException] {
-        default(request, token, consumer, binding)
+        default(request, token, consumer, mockBinding)
       }
 
       //then
@@ -106,7 +110,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
 
       //when
       val e = intercept[CandidateNotFoundException] {
-        default(request, token, consumer, binding)
+        default(request, token, consumer, mockBinding)
       }
 
       //then
@@ -119,11 +123,11 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       val request = new DefaultVersionRequest(null, version)
 
       val error = new ObjectError("defaultVersionRequest", "can not be null")
-      when(binding.hasErrors).thenReturn(true)
-      when(binding.getAllErrors).thenReturn(List[ObjectError](error))
+      when(mockBinding.hasErrors).thenReturn(true)
+      when(mockBinding.getAllErrors).thenReturn(List[ObjectError](error))
 
       val e = intercept[ValidationException] {
-        default(request, token, consumer, binding)
+        default(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Error in object 'defaultVersionRequest'")
@@ -139,7 +143,7 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       val token = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
-        default(request, token, consumer, binding)
+        default(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Access prohibited.")
@@ -154,10 +158,38 @@ class DefaultVersionControllerSpec extends WordSpec with ShouldMatchers with Moc
       val consumer = "invalid"
 
       val e = intercept[AuthorisationDeniedException] {
-        default(request, token, consumer, binding)
+        default(request, token, consumer, mockBinding)
       }
 
       e.getMessage should include("Access prohibited.")
+    }
+
+    "allow access if admin consumer header is provided" in new ControllerUnderTest {
+      //given
+      val candidate = "groovy"
+      val oldVersion = "2.3.5"
+      val newVersion = "2.3.6"
+
+      val request = new DefaultVersionRequest(candidate, newVersion)
+
+      val candidateObj = Candidate(candidate, oldVersion)
+      when(candidateRepo.findByCandidate(candidate)).thenReturn(candidateObj)
+
+      val versionObj = Version(
+        id = new ObjectId("5426b99bba78e60054fe48ca"), candidate, newVersion,
+        url = "http://dl.bintray.com/groovy/maven/groovy-binary-2.3.6.zip")
+      when(mockVersionRepo.findByCandidateAndVersion(candidate, newVersion)).thenReturn(versionObj)
+
+      val persistedObj = candidateObj.copy(id = new ObjectId("5423333bba78831a730c18e2"), default = newVersion)
+      when(mockCandidateUpdateRepo.updateDefault(argThat[Candidate](samePropertyValuesAs(candidateObj)))).thenReturn(persistedObj)
+
+      val adminConsumer = "admin"
+
+      //when
+      val response: ResponseEntity[SuccessResponse] = default(request, token, adminConsumer, mockBinding)
+
+      //then
+      response.getStatusCode shouldBe ACCEPTED
     }
   }
 

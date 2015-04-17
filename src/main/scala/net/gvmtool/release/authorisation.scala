@@ -34,5 +34,8 @@ object Authorised {
 
   private def validAccessToken(accessToken: AccessToken, token: String) = accessToken.value == token
 
-  private def validConsumer(consumer: String, request: SimpleRequest) = consumer == request.getCandidate
+  val adminConsumer = "admin"
+
+  private def validConsumer(consumer: String, request: SimpleRequest) =
+    consumer == request.getCandidate || consumer == adminConsumer
 }
