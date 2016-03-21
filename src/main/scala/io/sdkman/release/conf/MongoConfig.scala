@@ -20,7 +20,9 @@ import com.mongodb.casbah.MongoCredential.createMongoCRCredential
 import com.mongodb.{Mongo, ServerAddress}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.mongodb.MongoDbFactory
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory
 
 @Configuration
 class MongoConfig extends AbstractMongoConfiguration {
@@ -42,14 +44,13 @@ class MongoConfig extends AbstractMongoConfiguration {
 
   override def getDatabaseName = mongoDbName
 
-  def serverAddress(host: String, port: String) = new ServerAddress(host, port.toInt)
-
-  def credentials(dbName: String, username: String, password: String) =
-    List(createMongoCRCredential(username, dbName, password.toCharArray))
-
   override def mongo: Mongo = selectMongo.underlying
 
-  def selectMongo = mongoHost match {
+  override def mongoDbFactory: MongoDbFactory = new SimpleMongoDbFactory(mongo, mongoDbName)
+
+  private def serverAddress(host: String, port: String) = new ServerAddress(host, port.toInt)
+
+  private def selectMongo = mongoHost match {
     case "localhost" =>
       MongoClient(
         serverAddress(mongoHost, mongoPort))
@@ -58,4 +59,7 @@ class MongoConfig extends AbstractMongoConfiguration {
         serverAddress(mongoHost, mongoPort),
         credentials(mongoDbName, mongoUsername, mongoPassword))
   }
+
+  private def credentials(dbName: String, username: String, password: String) =
+    List(createMongoCRCredential(username, dbName, password.toCharArray))
 }
