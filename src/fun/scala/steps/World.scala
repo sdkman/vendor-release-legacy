@@ -42,7 +42,7 @@ object World {
   var responseCode: Int = 0
   var resultString: String = null
 
-  val mongoDb = Mongo.primeDatabase("gvm")
+  val mongoDb = Mongo.primeDatabase("sdkman")
   var candidateColl: MongoCollection = null
   var versionColl: MongoCollection = null
 
