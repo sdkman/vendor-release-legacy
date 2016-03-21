@@ -87,7 +87,7 @@ license {
 
 cloudfoundry {
     file = file("${projectDir}/build/libs/${project.name}-${project.version}.jar")
-    buildpack = "https://github.com/marcoVermeulen/java-buildpack"
+    buildpack = "https://github.com/cloudfoundry/java-buildpack"
     target = 'https://api.run.pivotal.io'
     organization = envVariableAsGlobal("CF_ORG", true)
     username = envVariableAsGlobal("CF_USERNAME", true)
