@@ -18,19 +18,21 @@ package steps
 import cucumber.api.scala.{EN, ScalaDsl}
 import org.scalatest._
 import steps.World._
-import support.Mongo
+import support.Mongo.{candidatesCollection, createCollection, dropCollection, versionsCollection}
 
 class Env extends ScalaDsl with EN with ShouldMatchers {
   Before() { s =>
-    candidateColl = Mongo.createCollection(mongoDb, "candidates")
-    versionColl = Mongo.createCollection(mongoDb, "versions")
+    createCollection(mongoDb, "candidates")
+    createCollection(mongoDb, "versions")
+    candidateColl = candidatesCollection
+    versionColl = versionsCollection
 
     responseCode = 0
     resultString = ""
   }
 
   After() { s =>
-    Mongo.dropCollection(candidateColl)
-    Mongo.dropCollection(versionColl)
+    dropCollection(candidateColl)
+    dropCollection(versionColl)
   }
 }

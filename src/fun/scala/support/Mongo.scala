@@ -15,34 +15,49 @@
  */
 package support
 
-import com.mongodb.casbah.Imports._
+import com.mongodb._
+import com.mongodb.client.{MongoCollection, MongoDatabase}
+
+import scala.language.implicitConversions
 
 object Mongo {
 
-  lazy val mongoClient = MongoClient()
+  lazy val mongoClient = new MongoClient()
 
-  def primeDatabase(name: String): MongoDB = mongoClient(name)
+  def primeDatabase(name: String): MongoDatabase = mongoClient.getDatabase(name)
 
-  def createCollection(db: MongoDB, name: String): MongoCollection = db(name)
+  def candidatesCollection(implicit db: MongoDatabase): MongoCollection[BasicDBObject] = getCollection(db, "candidates")
 
-  def dropCollection(coll: MongoCollection) = coll.drop()
+  def versionsCollection(implicit db: MongoDatabase): MongoCollection[BasicDBObject] = getCollection(db, "versions")
 
-  def versionPublished(coll: MongoCollection, candidate: String, version: String, url: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url)).isDefined
+  def getCollection(db: MongoDatabase, name: String) = db.getCollection(name, classOf[BasicDBObject])
 
-  def saveVersion(coll: MongoCollection, candidate: String, version: String, url: String) =
-    coll.save(MongoDBObject("candidate" -> candidate, "version" -> version, "url" -> url))
+  def createCollection(db: MongoDatabase, name: String) = db.createCollection(name)
 
-  def saveCandidate(coll: MongoCollection, candidate: String, default: String) =
-    coll.save(MongoDBObject("candidate" -> candidate, "default" -> default))
+  def dropCollection(coll: MongoCollection[BasicDBObject]) = coll.drop()
 
-  def isDefault(coll: MongoCollection, candidate: String, version: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "default" -> version)).isDefined
+  def versionPublished(coll: MongoCollection[BasicDBObject], candidate: String, version: String, url: String): Boolean =
+    coll.count(Map("candidate" -> candidate, "version" -> version, "url" -> url)) > 0
 
-  def versionExists(coll: MongoCollection, candidate: String, version: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate, "version" -> version)).isDefined
+  def saveVersion(coll: MongoCollection[BasicDBObject], candidate: String, version: String, url: String) =
+    coll.insertOne(Map("candidate" -> candidate, "version" -> version, "url" -> url))
 
-  def candidateExists(coll: MongoCollection, candidate: String): Boolean =
-    coll.findOne(MongoDBObject("candidate" -> candidate)).isDefined
+  def saveCandidate(coll: MongoCollection[BasicDBObject], candidate: String, default: String) =
+    coll.insertOne(Map("candidate" -> candidate, "default" -> default))
 
+  def isDefault(coll: MongoCollection[BasicDBObject], candidate: String, version: String): Boolean =
+    coll.count(Map("candidate" -> candidate, "default" -> version)) > 0
+
+  def versionExists(coll: MongoCollection[BasicDBObject], candidate: String, version: String): Boolean =
+    coll.count(Map("candidate" -> candidate, "version" -> version)) > 0
+
+  def candidateExists(coll: MongoCollection[BasicDBObject], candidate: String): Boolean =
+    coll.count(Map("candidate" -> candidate)) > 0
+
+
+  implicit def basicDbObject(keyValues: Map[String, AnyRef]): BasicDBObject = {
+    val bdo = new BasicDBObject()
+    keyValues.foreach(kv => bdo.append(kv._1, kv._2))
+    bdo
+  }
 }

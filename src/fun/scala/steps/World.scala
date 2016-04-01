@@ -18,7 +18,8 @@ package steps
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import com.fasterxml.jackson.module.scala.experimental.ScalaObjectMapper
-import com.mongodb.casbah.MongoCollection
+import com.mongodb.BasicDBObject
+import com.mongodb.client.MongoCollection
 import support.Mongo
 
 import scalaj.http.Http.Request
@@ -42,8 +43,8 @@ object World {
   var responseCode: Int = 0
   var resultString: String = null
 
-  val mongoDb = Mongo.primeDatabase("sdkman")
-  var candidateColl: MongoCollection = null
-  var versionColl: MongoCollection = null
+  implicit val mongoDb = Mongo.primeDatabase("sdkman")
+  var candidateColl: MongoCollection[BasicDBObject] = null
+  var versionColl: MongoCollection[BasicDBObject] = null
 
 }

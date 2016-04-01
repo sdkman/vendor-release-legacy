@@ -15,14 +15,14 @@
  */
 package io.sdkman.release.conf
 
-import com.mongodb.casbah.MongoClient
-import com.mongodb.casbah.MongoCredential.createMongoCRCredential
-import com.mongodb.{Mongo, ServerAddress}
+import com.mongodb.{Mongo, MongoClient, MongoCredential, ServerAddress}
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.MongoDbFactory
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory
+
+import scala.collection.JavaConverters._
 
 @Configuration
 class MongoConfig extends AbstractMongoConfiguration {
@@ -44,7 +44,7 @@ class MongoConfig extends AbstractMongoConfiguration {
 
   override def getDatabaseName = mongoDbName
 
-  override def mongo: Mongo = selectMongo.underlying
+  override def mongo: Mongo = selectMongo
 
   override def mongoDbFactory: MongoDbFactory = new SimpleMongoDbFactory(mongo, mongoDbName)
 
@@ -52,14 +52,14 @@ class MongoConfig extends AbstractMongoConfiguration {
 
   private def selectMongo = mongoHost match {
     case "localhost" =>
-      MongoClient(
+      new MongoClient(
         serverAddress(mongoHost, mongoPort))
     case _ =>
-      MongoClient(
+      new MongoClient(
         serverAddress(mongoHost, mongoPort),
         credentials(mongoDbName, mongoUsername, mongoPassword))
   }
 
   private def credentials(dbName: String, username: String, password: String) =
-    List(createMongoCRCredential(username, dbName, password.toCharArray))
+    List(MongoCredential.createScramSha1Credential(username, dbName, password.toCharArray)).asJava
 }
