@@ -16,6 +16,9 @@ cache:
   - "$HOME/.gradle"
 env:
   global:
+    secure: "Rppbke9WuzmfCGGZp45T+Tm52uLWSK+VhlLz0vvCQGNmK7zH+O7Nc4/1+h44IxTkxLhT3BZ6fgvzIwLihGsDt8ed3AM24k2ANC1ftz9R6mKicBZcXRKWbv+oCpzp4aRgQnkJHYRDFmmZzzkPxBVLS+z3r0KwdGI6CFXvr5sCVjQ="
+    secure: "Ms9JXbZ6sftig/uZGfaRJNisyljHUrGE8FraEGfmk82zvxUM2rmjsLevu7Sjqa4WL6sAqXYAQVmuI545xm3Ne5S24SK32Ct4jWFm0TTNhFdbb/9xf/43TMVn/Rqe9G08JRd3fzvDtFcm2kIypuD8Z9T/bUBAcPeyGvjOkF1Nyi4="
+    secure: "cy/KZfUUNqQ5G4VaOEy+ay/4YNzSThJOWv5AfK3YK/9afp7DKIcrEvksFAZQE76O1/EapkEICdE/fccUq773cMShTK00SL+O0obbBgb17QfMiF88rBvpFpMGDyc5M4PfhFXyMeBU7IuCBHJmgqu8U864aQRHYXlnSonYYeTpoXQ="
 
 # blacklist
 branches:
