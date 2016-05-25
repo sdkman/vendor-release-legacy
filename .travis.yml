@@ -6,11 +6,11 @@ before_install:
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker run -d -p 27017:27017 mongo:latest
 script:
-  - docker build -t sdkman/vendor-release:2.0.0-SNAPSHOT .
-  - docker run -d --net=host sdkman/vendor-release:2.0.0-SNAPSHOT
+  - docker build -t sdkman/vendor-release:2.0.0 .
+  - docker run -d --net=host sdkman/vendor-release:2.0.0
   - "./gradlew check"
 after_success:
-  - docker push sdkman/vendor-release:2.0.0-SNAPSHOT
+  - docker push sdkman/vendor-release:2.0.0
 cache:
   directories:
   - "$HOME/.gradle"
