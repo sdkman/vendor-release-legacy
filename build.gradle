@@ -40,16 +40,16 @@ dependencies {
 }
 
 configurations {
-    funTestCompile.extendsFrom testCompile
-    funTestRuntime.extendsFrom testRuntime
+    funCompile.extendsFrom testCompile
+    funRuntime.extendsFrom testRuntime
 }
 
 sourceSets {
-    funTest {
+    fun {
         scala.srcDir file('src/fun/scala')
         resources.srcDir     file('src/fun/resources')
-        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.funTestCompile
-        runtimeClasspath = output + compileClasspath + configurations.funTestRuntime
+        compileClasspath = sourceSets.main.output + sourceSets.test.output + configurations.funCompile
+        runtimeClasspath = output + compileClasspath + configurations.funRuntime
     }
 }
 
@@ -57,12 +57,12 @@ processResources {
     filter ReplaceTokens, tokens: ["application.version": project.version]
 }
 
-task funTest(type: Test) {
-    testClassesDir = sourceSets.funTest.output.classesDir
-    classpath = sourceSets.funTest.runtimeClasspath
+task fun(type: Test) {
+    testClassesDir = sourceSets.fun.output.classesDir
+    classpath = sourceSets.fun.runtimeClasspath
 }
 
-check.dependsOn funTest
+check.dependsOn fun
 
 jar.archiveName = "application.jar"
 
