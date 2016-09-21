@@ -36,11 +36,11 @@ object Mongo {
 
   def dropCollection(coll: MongoCollection[BasicDBObject]) = coll.drop()
 
-  def versionPublished(coll: MongoCollection[BasicDBObject], candidate: String, version: String, url: String): Boolean =
-    coll.count(Map("candidate" -> candidate, "version" -> version, "url" -> url)) > 0
+  def versionPublished(coll: MongoCollection[BasicDBObject], candidate: String, version: String, url: String, platform: String): Boolean =
+    coll.count(Map("candidate" -> candidate, "version" -> version, "url" -> url, "platform" -> platform)) > 0
 
   def saveVersion(coll: MongoCollection[BasicDBObject], candidate: String, version: String, url: String) =
-    coll.insertOne(Map("candidate" -> candidate, "version" -> version, "url" -> url))
+    coll.insertOne(Map("candidate" -> candidate, "version" -> version, "url" -> url, "platform" -> "UNIVERSAL"))
 
   def saveCandidate(coll: MongoCollection[BasicDBObject], candidate: String, default: String) =
     coll.insertOne(Map("candidate" -> candidate, "default" -> default))

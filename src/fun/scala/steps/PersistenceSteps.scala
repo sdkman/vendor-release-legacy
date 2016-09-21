@@ -21,8 +21,8 @@ import steps.World._
 import support.Mongo
 
 class PersistenceSteps extends ScalaDsl with EN with ShouldMatchers {
-  Then( """^"(.*?)" Version "(.*?)" with URL "(.*?)" was published$""") { (candidate: String, version: String, url: String) =>
-    Mongo.versionPublished(versionColl, candidate, version, url) shouldBe true
+  Then( """^"(.*?)" Version "(.*?)" with URL "(.*?)" was published as (.*?)$""") { (candidate: String, version: String, url: String, platform: String) =>
+    Mongo.versionPublished(versionColl, candidate, version, url, platform) shouldBe true
   }
 
   Given( """^a "(.*?)" Version "(.*?)" with URL "(.*?)" already exists$""") { (candidate: String, version: String, url: String) =>

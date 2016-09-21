@@ -19,7 +19,7 @@ Feature: Release a Candidate Version
   Background:
     Given the Client is Authorised and Authenticated as "groovy"
 
-  Scenario: Release a Candidate Version
+  Scenario: Release a Universal Candidate Version
     Given the existing Default "groovy" Version is "2.3.5"
     When a JSON POST on the "/release" endpoint:
     """
@@ -32,7 +32,7 @@ Feature: Release a Candidate Version
     Then the status received is "CREATED"
     And a valid identifier is received in the response
     And the message "released groovy version: 2.3.6" is received
-    And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published
+    And "groovy" Version "2.3.6" with URL "http://hostname/groovy-binary-2.3.6.zip" was published as UNIVERSAL
 
   Scenario: Attempt to Release a duplicate Version
     Given the existing Default "groovy" Version is "2.3.5"

@@ -33,7 +33,7 @@ trait VersionRepo extends MongoRepository[Version, ObjectId] {
 
 @Document(collection = "versions")
 @TypeAlias("Version")
-case class Version(id: ObjectId, candidate: String, version: String, url: String)
+case class Version(id: ObjectId, candidate: String, version: String, url: String, platform: String = "UNIVERSAL")
 
 object Version {
   def apply(candidate: String, version: String, url: String): Version = Version(null, candidate, version, url)
